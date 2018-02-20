@@ -228,6 +228,73 @@ Text Domain: wcip
     				echo "<br>";
     				echo "status is : " . $_GET['status'] ." AND id is : " . $_GET['id'] ; 
 
+    				echo "<hr>";
+
+    				// $orders = wc_get_orders( array('order_key' =>  $id ) );
+    				$order = wc_get_order( $id  );
+
+    				echo "<pre>";
+    				// print_r($order) ; 
+    				echo "</pre>";
+
+    				$order->id; // order ID
+    				$order->post_title; // order Title
+    				$order->post_status; // order Status
+    				// getting order items
+    				echo "<table>
+    				      <tr>
+    				        <th>id</th>
+    				        <th>Product Name </th>
+    				        <th>Quantity</th>
+    				        <th>Price</th>
+    				      </tr>";
+    				      $i = 1 ; 
+    				foreach($order->get_items() as $item_id => $item_values){
+    				    // Getting the product ID
+    				    
+    				    $product_id = $item_values['product_id'];
+    				    $product_name = $item_values['name'];
+    				    $product_quantity = $item_values['quantity'];
+    				    $product_price = $item_values['total'];
+    				    // ..../...
+    				    ?>
+
+    				    <!-- <table>
+    				      <tr>
+    				        <th>Product</th>
+    				        <th>Quantity</th>
+    				        <th>Price</th>
+    				      </tr> -->
+    				      <tr>
+    				        <td><?php echo $i ; ?></td>
+    				        <td><?php echo $product_name ; ?></td>
+    				        <td><?php echo $product_quantity ; ?></td>
+    				        <td><?php echo $product_price ; ?></td>
+    				      </tr>
+    				      
+    				    <!-- </table> -->
+
+
+    				    <?php
+    				    $i++ ;
+    				    // .../...
+    				    // echo $product_id ."<br>";
+    				    // echo $product_name ."<br>";
+    				    // echo $product_quantity ."<br>";
+    				}
+    				echo "<tr>
+    				    <td> </td> 
+    				    <td> </td>
+    				    <td> </td>
+    				    <td><b> {$order->total} </b></td>
+    				</tr>";
+    				echo "</table>";
+
+    				echo "<hr>";
+    				echo "<pre>";
+    				print_r($order) ; 
+    				echo "</pre>";
+
     				
 
     			}
