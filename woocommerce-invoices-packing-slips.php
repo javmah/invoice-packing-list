@@ -23,6 +23,13 @@ Text Domain: wcip
 */
 
 
+############################# Project To Do List ############################################
+
+// USE PDF to Complite The Thing , Do it Tonight 
+// Use Option To Make It More Interactive 
+// Use Template Engine To Do Some Worke  
+
+
 #  cheack to Make Sure Woocommerce Is active And Running
     if ( in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))){
     	# run only if  there is no other class with this name 
