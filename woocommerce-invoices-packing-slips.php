@@ -224,9 +224,9 @@ Text Domain: wcip
     				// id
     				$id =  (isset($_GET['id']) ? $_GET['id'] : false);
 
-    				echo "status is : " . $status ." AND id is : " . $id  ; 
-    				echo "<br>";
-    				echo "status is : " . $_GET['status'] ." AND id is : " . $_GET['id'] ; 
+    				// echo "status is : " . $status ." AND id is : " . $id  ; 
+    				// echo "<br>";
+    				// echo "status is : " . $_GET['status'] ." AND id is : " . $_GET['id'] ; 
 
     				echo "<hr>";
 
@@ -240,13 +240,54 @@ Text Domain: wcip
     				$order->id; // order ID
     				$order->post_title; // order Title
     				$order->post_status; // order Status
+    				$order->total_tax; //total tax
+    				$order->shipping_total; // shipping total
+    				$order->discount_total; // discount_total
+    				$order->total; // discount_total
+
+    				// Order information Starts  
+    				echo "Order Number:		" . $order->id ."<br>" ;
+    				echo "Order Date  :		" .$order->order_date ."<br>" ;
+    				echo "Payment Method:	" .  $order->payment_method_title ;
+    				// Order information Ends 
+
+    				echo "<hr>";
+
+    				// Shipping Address Starts 
+    				echo "Shipping Address:<br>";
+    				echo " name 	:" . $order->shipping_first_name . " " .  $order->shipping_last_name	. "<br>";
+    				// echo "last name 	:" . $order->shipping_last_name 	. "<br>";
+    				echo "company 		:" . $order->shipping_company 		. "<br>";
+    				echo "address 1 	:" . $order->shipping_address_1 	. "<br>";
+    				echo "address 2 	:" . $order->shipping_address_2 	. "<br>";
+    				echo "city 			:" . $order->shipping_city 			. "<br>";
+    				echo "state 		:" . $order->shipping_state			. "<br>";
+    				echo "postcode 		:" . $order->shipping_postcode 		. "<br>";
+    				echo "country 		:" . $order->shipping_country		. "<br>";
+    				
+    				// Shipping Address Ends 
+    				echo "<hr>";
+    				// Billing Address Starts
+    				echo "Billing Address: <br>";
+    				echo " name 	:" . $order->billing_first_name . " " .  $order->shipping_last_name	. "<br>";
+    				// echo "last name 	:" . $order->shipping_last_name 	. "<br>";
+    				echo "company 		:" . $order->billing_company 		. "<br>";
+    				echo "address 1 	:" . $order->billing_address_1 	. "<br>";
+    				echo "address 2 	:" . $order->billing_address_2 	. "<br>";
+    				echo "city 			:" . $order->billing_city 			. "<br>";
+    				echo "state 		:" . $order->billing_state			. "<br>";
+    				echo "postcode 		:" . $order->billing_postcode 		. "<br>";
+    				echo "country 		:" . $order->billing_country		. "<br>";
+    				// Billing Address Ends 
+    				echo "<hr>";
     				// getting order items
-    				echo "<table>
-    				      <tr>
+    				echo "<table border='1' >
+    				      <tr >
     				        <th>id</th>
     				        <th>Product Name </th>
     				        <th>Quantity</th>
-    				        <th>Price</th>
+    				        <th>Unit Price</th>
+    				        <th>Total </th>
     				      </tr>";
     				      $i = 1 ; 
     				foreach($order->get_items() as $item_id => $item_values){
@@ -255,7 +296,8 @@ Text Domain: wcip
     				    $product_id = $item_values['product_id'];
     				    $product_name = $item_values['name'];
     				    $product_quantity = $item_values['quantity'];
-    				    $product_price = $item_values['total'];
+    				    $product_subtotal_price = $item_values['subtotal'];
+    				    $product_total_price = $item_values['total'];
     				    // ..../...
     				    ?>
 
@@ -269,7 +311,21 @@ Text Domain: wcip
     				        <td><?php echo $i ; ?></td>
     				        <td><?php echo $product_name ; ?></td>
     				        <td><?php echo $product_quantity ; ?></td>
-    				        <td><?php echo $product_price ; ?></td>
+
+    				        <td>
+    				        	<?php 
+    				        		// echo $product_subtotal_price / $product_quantity  ;
+    				        		if($product_subtotal_price == $product_total_price){
+    				        			echo $product_subtotal_price / $product_quantity  ;
+    				        		}else{
+    				        			echo "<strike>". $product_subtotal_price / $product_quantity . "</strike>" . $product_total_price / $product_quantity   ;
+    				        		}
+
+
+    				         	?>
+    				        </td>
+
+    				        <td><?php echo $product_total_price ; ?></td>
     				      </tr>
     				      
     				    <!-- </table> -->
@@ -284,6 +340,31 @@ Text Domain: wcip
     				}
     				echo "<tr>
     				    <td> </td> 
+    				    <td> Shipping total  </td>
+    				    <td> </td>
+    				    <td>  </td>
+    				    <td><b> {$order->shipping_total} </b></td>
+    				</tr>";
+
+    				echo "<tr>
+    				    <td> </td> 
+    				    <td> discount total  </td>
+    				    <td> </td>
+    				    <td>  </td>
+    				    <td><b> {$order->discount_total} </b></td>
+    				</tr>";
+
+    				echo "<tr>
+    				    <td> </td> 
+    				    <td> Total Tax </td>
+    				    <td> </td>
+    				    <td>  </td>
+    				    <td><b> {$order->total_tax} </b></td>
+    				</tr>";
+
+    				echo "<tr>
+    				    <td> </td> 
+    				    <td> Total  </td>
     				    <td> </td>
     				    <td> </td>
     				    <td><b> {$order->total} </b></td>
@@ -292,7 +373,7 @@ Text Domain: wcip
 
     				echo "<hr>";
     				echo "<pre>";
-    				print_r($order) ; 
+    				// print_r($order) ; 
     				echo "</pre>";
 
     				
