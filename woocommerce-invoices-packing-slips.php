@@ -215,21 +215,16 @@ Text Domain: wcip
     			function viewinps() {
     			  // form processing code here
     				if (is_user_logged_in()) {
-    					echo " Hmm you are Logged in : Good Job";
+    					echo " Hmm you are Logged in : Good Job <br>";
     				}
-
-    				echo "<br>";
-    				// status
-    				$status = (isset($_GET['status']) ? $_GET['status'] : false);
-    				// id
-    				$id =  (isset($_GET['id']) ? $_GET['id'] : false);
+    				$status = (isset($_GET['status']) ? $_GET['status'] : false); // status
+    				$id =  (isset($_GET['id']) ? $_GET['id'] : false); // id
 
     				// echo "status is : " . $status ." AND id is : " . $id  ; 
     				// echo "<br>";
     				// echo "status is : " . $_GET['status'] ." AND id is : " . $_GET['id'] ; 
 
     				echo "<hr>";
-
     				// $orders = wc_get_orders( array('order_key' =>  $id ) );
     				$order = wc_get_order( $id  );
 
@@ -237,13 +232,14 @@ Text Domain: wcip
     				// print_r($order) ; 
     				echo "</pre>";
 
-    				$order->id; // order ID
-    				$order->post_title; // order Title
-    				$order->post_status; // order Status
-    				$order->total_tax; //total tax
-    				$order->shipping_total; // shipping total
-    				$order->discount_total; // discount_total
-    				$order->total; // discount_total
+    				
+
+    				// Header section One Starts
+    				// Header section One  Ends 
+
+
+    				// Header section two Starts
+    				// Header section two Ends 
 
     				// Order information Starts  
     				echo "Order Number:		" . $order->id ."<br>" ;
@@ -376,9 +372,19 @@ Text Domain: wcip
     				// print_r($order) ; 
     				echo "</pre>";
 
-    				
 
-    			}
+
+    				// Fvooter section One  Starts 
+
+    				// Fvooter section One  Ends
+
+
+
+    				// Footer section two Starts 
+
+    				// Footer section two Ends 
+    			} 
+    			// Function Ends Heare 
 
 
     			// ############################# Handelling GET Request Ends ###############################
