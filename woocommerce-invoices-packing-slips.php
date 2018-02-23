@@ -29,6 +29,14 @@ Text Domain: wcip
 // Use Option To Make It More Interactive 
 // Use Template Engine To Do Some Worke  
 
+################################ Adding external library Starts ####################################
+
+//Include the main TCPDF library (search for installation path).
+// require_once('tcpdf_include.php');
+require_once( plugin_dir_path( __FILE__ ) . '/tcpdf/tcpdf.php');
+
+################################ Adding external library Starts ####################################
+
 
 #  cheack to Make Sure Woocommerce Is active And Running
     if ( in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))){
@@ -219,7 +227,7 @@ Text Domain: wcip
     			// ############################# Handelling GET Request Starts #############################
 
 
-    			function viewinps() {
+    			function viewinps_working_copy() {
     			  // form processing code here
     				if (is_user_logged_in()) {
     					echo " Hmm you are Logged in : Good Job <br>";
@@ -250,8 +258,8 @@ Text Domain: wcip
 
     				// Order information Starts  
     				echo "Order Number:		" . $order->id ."<br>" ;
-    				echo "Order Date  :		" .$order->order_date ."<br>" ;
-    				echo "Payment Method:	" .  $order->payment_method_title ;
+    				echo "Order Date  :		" . $order->order_date ."<br>" ;
+    				echo "Payment Method:	" . $order->payment_method_title ;
     				// Order information Ends 
 
     				echo "<hr>";
@@ -394,7 +402,350 @@ Text Domain: wcip
     			// Function Ends Heare 
 
 
-    			// ############################# Handelling GET Request Ends ###############################
+    			// ############################# Handelling GET Request Ends #################################
+
+    			// ######################################  PDF  Testing Starts ################################
+
+    			public function viewinps_PDF_working($value=''){
+    				// create new PDF document
+    				$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+    				// set document information
+    				$pdf->SetCreator(PDF_CREATOR);
+    				$pdf->SetAuthor('Nicola Asuni');
+    				$pdf->SetTitle('TCPDF Example 023');
+    				$pdf->SetSubject('TCPDF Tutorial');
+    				$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
+
+    				// set default header data
+    				$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 023', PDF_HEADER_STRING);
+
+    				// set header and footer fonts
+    				$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+    				$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+    				// set default monospaced font
+    				$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+    				// set margins
+    				$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+    				$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+    				$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+    				// set auto page breaks
+    				$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+    				// set image scale factor
+    				$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+    				// set some language-dependent strings (optional)
+    				if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+    					require_once(dirname(__FILE__).'/lang/eng.php');
+    					$pdf->setLanguageArray($l);
+    				}
+
+    				// ---------------------------------------------------------
+    				// set font
+    				$pdf->SetFont('times', 'BI', 14);
+
+    				// Start First Page Group
+    				$pdf->startPageGroup();
+
+    				// add a page
+    				$pdf->AddPage();
+
+    				// set some text to print
+    				$txt ="
+    				Example of page groups.
+    				Check the page numbers on the page footer.
+
+    				This is the first page of group 1." ; 
+    				
+
+    				// print a block of text using Write()
+    				$pdf->Write(0, $txt, '', 0, 'L', true, 0, false, false, 0);
+
+    				// add second page
+    				$pdf->AddPage();
+    				$pdf->Cell(0, 10, 'This is the second page of group 1', 0, 1, 'L');
+
+    				// Start Second Page Group
+    				$pdf->startPageGroup();
+
+    				// add some pages
+    				$pdf->AddPage();
+    				$pdf->Cell(0, 10, 'This is the first page of group 2', 0, 1, 'L');
+    				$pdf->AddPage();
+    				$pdf->Cell(0, 10, 'This is the second page of group 2', 0, 1, 'L');
+    				$pdf->AddPage();
+    				$pdf->Cell(0, 10, 'This is the third page of group 2', 0, 1, 'L');
+    				$pdf->AddPage();
+    				$pdf->Cell(0, 10, 'This is the fourth page of group 2', 0, 1, 'L');
+
+    				// ---------------------------------------------------------
+
+    				//Close and output PDF document
+    				$pdf->Output('goodjob.pdf', 'I');
+    			}
+    			
+
+
+    			// ######################################  PDF  Testing Ends   ################################
+
+    			// ############################################ PDF Layout Genarating Starts ####################################
+
+    			public function viewinps($value=''){
+    				// create new PDF document
+    				$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+    				// set document information
+    				$pdf->SetCreator(PDF_CREATOR);
+    				$pdf->SetAuthor('Nicola Asuni');
+    				$pdf->SetTitle('TCPDF Example 006');
+    				$pdf->SetSubject('TCPDF Tutorial');
+    				$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
+
+    				// set default header data
+    				$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 006', PDF_HEADER_STRING);
+
+    				// set header and footer fonts
+    				$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+    				$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+    				// set default monospaced font
+    				$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+    				// set margins
+    				$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+    				$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+    				$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+    				// set auto page breaks
+    				$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+    				// set image scale factor
+    				$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+    				// set some language-dependent strings (optional)
+    				if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+    					require_once(dirname(__FILE__).'/lang/eng.php');
+    					$pdf->setLanguageArray($l);
+    				}
+
+    				// ---------------------------------------------------------
+
+    				// set font
+    				$pdf->SetFont('dejavusans', '', 10);
+
+    				// add a page
+    				$pdf->AddPage();
+
+    				// writeHTML($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='')
+    				// writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=0, $reseth=true, $align='', $autopadding=true)
+
+    				// Woocommerce Query Starts 
+    				$status = (isset($_GET['status']) ? $_GET['status'] : false); // status
+    				$id =  (isset($_GET['id']) ? $_GET['id'] : false); // id
+    				$order = wc_get_order( $id  );
+
+    				// echo "<pre>" ;
+    				// print_r( $order->order_date) ;
+    				// echo "<pre/>" ;
+
+    				// Woocommerce Query Ends
+
+    				// create some HTML content
+    				$html1 = '
+    					
+
+    						
+    						<table cellpadding="10" style="width:100% ; margin-bottom: 50px ;">
+    						  <tr>
+    						    <td style="padding-left: 10px; " >
+    						    	Name : '. $order->billing_first_name .'
+    						    	<br> Company : '. $order->billing_company .' 
+    						    	<br> Address 1 : '. $order->billing_address_1 .'
+    						    	<br> Address 2: '. $order->billing_address_2 .'
+    						    	<br> Post Code : '. $order->billing_postcode .'
+    						    	<br> billing Country : '. $order->billing_country . '
+    						    </td>
+
+
+    						    <td>
+    						    	Order Number: '. $order->id.'
+    						    	<br>
+    						    	Order Date: '. $order->order_date .'
+    						    	<br>
+    						    	Payment Method: '. $order->payment_method_title.'
+    							</td>
+    						  </tr>
+    						</table>' ;
+
+
+    					$html2 = '
+    						<p>
+    							order contrey: '. $order->billing_country . '
+    						</p>
+    					'; 
+    						
+    						
+
+    					$html3 = '<table cellpadding="10" style="width: 100% ;  ">
+    						  <tr style="background-color:#7f7f7f;" >
+    						    <th>#</th>
+    						    <th>Product Name</th>
+    						    <th> Quantity </th>
+    						    <th>Unit Price</th>
+    						    <th>Total</th>
+    						  </tr>
+    						  <tr>
+    						    <td> 1</td>
+    						    <td>Alfreds Futterkiste</td>
+    						    <td>1</td>
+    						    <td>800</td>
+    						    <td>800</td>
+
+    						  </tr>
+    						  <tr>
+    						  	<td> 2 </td>
+    						    <td>Centro comercial Moctezuma</td>
+    						    <td>2</td>
+    						    <td>300</td>
+    						    <td>600</td>
+    						  </tr>
+    						  <tr>
+    						  	<td> 3 </td>
+    						    <td>Ernst Handel</td>
+    						    <td>5</td>
+    						    <td>100</td>
+    						    <td>500</td>
+    						  </tr>
+    						  <tr>
+    						  	<td> 4 </td>
+    						    <td>Island Trading</td>
+    						    <td>4</td>
+    						    <td>200</td>
+    						    <td>800</td>
+    						  </tr>
+    						  <tr>
+    						  	<td>  5</td>
+    						    <td>Laughing Bacchus Winecellars</td>
+    						    <td>7</td>
+    						    <td>100</td>
+    						    <td>700</td>
+    						  </tr>
+    						  <tr>
+    						  	<td> 6 </td>
+    						    <td>Magazzini Alimentari Riuniti</td>
+    						    <td>2</td>
+    						    <td>100</td>
+    						    <td>600</td>
+    						  </tr>
+
+    						  <!-- Spacial <tr> -->
+    						  <tr>
+    						  	<td colspan="4">
+    						  		subtotal
+    						  	</td>
+    						  	<td>
+    						  		4000
+    						  	</td>
+    						  </tr>
+
+    						  <!-- Spacial <tr> -->
+    						  <tr>
+    						  	<td colspan="4">
+    						  		shipping total
+    						  	</td>
+    						  	<td>
+    						  		4000
+    						  	</td>
+    						  </tr>
+
+    						  <!-- Spacial <tr> -->
+    						  <tr>
+    						  	<td colspan="4">
+    						  		Total Tax
+    						  	</td>
+    						  	<td>
+    						  		4000
+    						  	</td>
+    						  </tr>
+
+    						  <!-- Spacial <tr> -->
+    						  <tr>
+    						  	<td colspan="4">
+    						  		Discount total 
+    						  	</td>
+    						  	<td>
+    						  		4000
+    						  	</td>
+    						  </tr>
+
+    						  <!-- Spacial <tr> -->
+    						  <tr>
+    						  	<td colspan="4">
+    						  		INVOICE total 
+    						  	</td>
+    						  	<td>
+    						  		4000
+    						  	</td>
+    						  </tr>
+
+
+    						</table>
+
+    						<!-- Style Starts -->
+    						<style type="text/css">
+    							
+
+    							table, th, td {
+    							    border: 1px solid black;
+    							}
+
+    							table{
+    								margin-top: 170px ;
+    							}
+
+    							td {
+    								padding: 5px 10px 5px 5px; 
+    							}
+
+    							
+
+    							/*#inbody{
+    								width: 100%;
+    							}*/
+    						</style>
+    						<!-- Style Ends -->
+    					
+
+    				'; 
+
+    				$html = $html1 . "<br/>" . $html2 . "<br/>" . $html3 ; 
+
+    				// output the HTML content
+    				$pdf->writeHTML($html, true, false, true, false, '');
+
+    				// - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    				// reset pointer to the last page
+    				$pdf->lastPage();
+
+    				// ---------------------------------------------------------
+
+    				//Close and output PDF document
+    				$pdf->Output('try again.pdf', 'I');
+
+    				//============================================================+
+    				// END OF FILE
+    				//============================================================+
+
+    				
+
+    			}
+
+    			// ############################################ PDF Layout Genarating Ends ######################################
 
 
 
