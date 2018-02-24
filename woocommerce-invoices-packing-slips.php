@@ -35,6 +35,7 @@ Text Domain: wcip
 // require_once('tcpdf_include.php');
 require_once( plugin_dir_path( __FILE__ ) . '/tcpdf/tcpdf.php');
 
+
 ################################ Adding external library Starts ####################################
 
 
@@ -494,7 +495,7 @@ require_once( plugin_dir_path( __FILE__ ) . '/tcpdf/tcpdf.php');
 
     			// ############################################ PDF Layout Genarating Starts ####################################
 
-    			public function viewinps($value=''){
+    			public function viewinps_working_x($value=''){
     				// create new PDF document
     				$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -588,112 +589,56 @@ require_once( plugin_dir_path( __FILE__ ) . '/tcpdf/tcpdf.php');
     						</p>
     					'; 
     						
-    						
+    					
+    					// cellpadding="5"
 
-    					$html3 = '<table cellpadding="10" style="width: 100% ;  ">
+    					$table1 = '<table  style="width: 100% ;  ">
     						  <tr style="background-color:#7f7f7f;" >
     						    <th>#</th>
     						    <th>Product Name</th>
     						    <th> Quantity </th>
     						    <th>Unit Price</th>
     						    <th>Total</th>
-    						  </tr>
-    						  <tr>
-    						    <td> 1</td>
-    						    <td>Alfreds Futterkiste</td>
-    						    <td>1</td>
-    						    <td>800</td>
-    						    <td>800</td>
+    						  </tr>' ;
 
-    						  </tr>
-    						  <tr>
-    						  	<td> 2 </td>
-    						    <td>Centro comercial Moctezuma</td>
-    						    <td>2</td>
-    						    <td>300</td>
-    						    <td>600</td>
-    						  </tr>
-    						  <tr>
-    						  	<td> 3 </td>
-    						    <td>Ernst Handel</td>
-    						    <td>5</td>
-    						    <td>100</td>
-    						    <td>500</td>
-    						  </tr>
-    						  <tr>
-    						  	<td> 4 </td>
-    						    <td>Island Trading</td>
-    						    <td>4</td>
-    						    <td>200</td>
-    						    <td>800</td>
-    						  </tr>
-    						  <tr>
-    						  	<td>  5</td>
-    						    <td>Laughing Bacchus Winecellars</td>
-    						    <td>7</td>
-    						    <td>100</td>
-    						    <td>700</td>
-    						  </tr>
-    						  <tr>
-    						  	<td> 6 </td>
-    						    <td>Magazzini Alimentari Riuniti</td>
-    						    <td>2</td>
-    						    <td>100</td>
-    						    <td>600</td>
-    						  </tr>
+    					// Loop Starts
+    					
+    					$i = 1 ; 
+    					foreach($order->get_items() as $item_id => $item_values){
+    					    // Getting the product ID
+    					    
+    					    $product_id = $item_values['product_id'];
+    					    $product_name = $item_values['name'];
+    					    $product_quantity = $item_values['quantity'];
+    					    $product_subtotal_price = $item_values['subtotal'];
+    					    $product_total_price = $item_values['total'];
+    					    // ..../...
+    					    $table2 .= "  <tr>
+    					        <td> $i </td>
+    					        <td>$product_name </td>
+    					        <td> $product_quantity </td>
 
-    						  <!-- Spacial <tr> -->
-    						  <tr>
-    						  	<td colspan="4">
-    						  		subtotal
-    						  	</td>
-    						  	<td>
-    						  		4000
-    						  	</td>
-    						  </tr>
+    					        <td>" ; 
+    					        	
+    					        		// echo $product_subtotal_price / $product_quantity  ;
+    					        		if($product_subtotal_price == $product_total_price){
+    					        			$table2 .= $product_subtotal_price / $product_quantity  ;
+    					        		}else{
+    					        			$table2 .= "<strike>". $product_subtotal_price / $product_quantity . "</strike>" . $product_total_price / $product_quantity   ;
+    					        		}
 
-    						  <!-- Spacial <tr> -->
-    						  <tr>
-    						  	<td colspan="4">
-    						  		shipping total
-    						  	</td>
-    						  	<td>
-    						  		4000
-    						  	</td>
-    						  </tr>
+    					    $table2 .="</td>
 
-    						  <!-- Spacial <tr> -->
-    						  <tr>
-    						  	<td colspan="4">
-    						  		Total Tax
-    						  	</td>
-    						  	<td>
-    						  		4000
-    						  	</td>
-    						  </tr>
+    					        <td> $product_total_price </td>
+    					      </tr>" ;
+    					    $i++ ; 
+    					} 
+    					// Loop  Ends 
 
-    						  <!-- Spacial <tr> -->
-    						  <tr>
-    						  	<td colspan="4">
-    						  		Discount total 
-    						  	</td>
-    						  	<td>
-    						  		4000
-    						  	</td>
-    						  </tr>
-
-    						  <!-- Spacial <tr> -->
-    						  <tr>
-    						  	<td colspan="4">
-    						  		INVOICE total 
-    						  	</td>
-    						  	<td>
-    						  		4000
-    						  	</td>
-    						  </tr>
+    					
 
 
-    						</table>
+    					$table3 ='	</table>
 
     						<!-- Style Starts -->
     						<style type="text/css">
@@ -722,7 +667,7 @@ require_once( plugin_dir_path( __FILE__ ) . '/tcpdf/tcpdf.php');
 
     				'; 
 
-    				$html = $html1 . "<br/>" . $html2 . "<br/>" . $html3 ; 
+    				$html = $html1 . "<br/>" . $html2 . "<br/>" . $table1 . $table2 . $table3 ; 
 
     				// output the HTML content
     				$pdf->writeHTML($html, true, false, true, false, '');
@@ -735,7 +680,7 @@ require_once( plugin_dir_path( __FILE__ ) . '/tcpdf/tcpdf.php');
     				// ---------------------------------------------------------
 
     				//Close and output PDF document
-    				$pdf->Output('try again.pdf', 'I');
+    				$pdf->Output( 'invoice-'.$order->id.'-'.$order->billing_first_name.'.pdf', 'I');
 
     				//============================================================+
     				// END OF FILE
@@ -746,6 +691,195 @@ require_once( plugin_dir_path( __FILE__ ) . '/tcpdf/tcpdf.php');
     			}
 
     			// ############################################ PDF Layout Genarating Ends ######################################
+
+    			//  ############# Test Starts ##################
+    			public function viewinps_working_fine($value=''){
+    				// create new PDF document
+    				$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+    				// set document information
+    				$pdf->SetCreator(PDF_CREATOR);
+    				$pdf->SetAuthor('Nicola Asuni');
+    				$pdf->SetTitle('TCPDF Example 006');
+    				$pdf->SetSubject('TCPDF Tutorial');
+    				$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
+
+    				// set default header data
+    				$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 006', PDF_HEADER_STRING);
+
+    				// set header and footer fonts
+    				$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+    				$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+    				// set default monospaced font
+    				$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+    				// set margins
+    				$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+    				$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+    				$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+    				// set auto page breaks
+    				$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+    				// set image scale factor
+    				$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+    				// set some language-dependent strings (optional)
+    				if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+    					require_once(dirname(__FILE__).'/lang/eng.php');
+    					$pdf->setLanguageArray($l);
+    				}
+
+    				// ---------------------------------------------------------
+
+    				// set font
+    				$pdf->SetFont('dejavusans', '', 10);
+
+    				// add a page
+    				$pdf->AddPage();
+
+    				// writeHTML($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='')
+    				// writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=0, $reseth=true, $align='', $autopadding=true)
+
+    				// Woocommerce Query Starts 
+    				$status = (isset($_GET['status']) ? $_GET['status'] : false); // status
+    				$id =  (isset($_GET['id']) ? $_GET['id'] : false); // id
+    				$order = wc_get_order( $id  );
+
+    				// echo "<pre>" ;
+    				// print_r( $order->order_date) ;
+    				// echo "<pre/>" ;
+
+    				// Woocommerce Query Ends
+
+    				// create some HTML content
+    				$html1 = '
+    					
+    						<table cellpadding="3" style="width:99% ; margin-bottom: 50px ;">
+    						  <tr>
+    						    <td style="padding-left: 10px; " >
+    						    	<b> Billing Address : </b>
+    						    	<br>
+    						    	Name : '. $order->billing_first_name .'
+    						    	<br> Company : '. $order->billing_company .' 
+    						    	<br> Address 1 : '. $order->billing_address_1 .'
+    						    	<br> Address 2: '. $order->billing_address_2 .'
+    						    	<br> Post Code : '. $order->billing_postcode .'
+    						    	<br> billing Country : '. $order->billing_country . '
+    						    </td>
+
+
+    						    <td>
+    						    	Order Number: '. $order->id.'
+    						    	<br>
+    						    	Order Date: '. $order->order_date .'
+    						    	<br>
+    						    	Payment Method: '. $order->payment_method_title.'
+    							</td>
+    						  </tr>
+    						</table>' ;
+
+
+    					
+    						
+    					//  table Attributes
+    					// cellpadding="5"
+    					// border="1"
+    					// cellpadding="2" cellspacing="2"
+
+    					$table1 = '<table cellpadding="5" cellspacing="0"  width="100%">
+    						  
+    						  <tr style="background-color:#7f7f7f;color:#0000FF;">
+    						   <td width="35" align="center"><b>#</b></td>
+    						   <td width="370" align="center"><b>Product Name</b></td>
+    						   <td width="55" align="center"><b>Qty</b></td>
+    						   <td width="95" align="center"> <b>Unit Price</b></td>
+    						   <td width="77" align="center"><b>Total</b></td>
+    						  </tr>
+
+    						  ' ;
+
+    					// Loop Starts
+    					
+    					$i = 1 ; 
+    					foreach($order->get_items() as $item_id => $item_values){
+    					    // Getting the product ID
+    					    
+    					    $product_id = $item_values['product_id'];
+    					    $product_name = $item_values['name'];
+    					    $product_quantity = $item_values['quantity'];
+    					    $product_subtotal_price = $item_values['subtotal'];
+    					    $product_total_price = $item_values['total'];
+    					    // ..../...
+    					    $table2 .= "  <tr>
+    					        <td width='35' align='center' > $i </td>
+    					        <td width='370' align='center' >$product_name </td>
+    					        <td width='55' align='center' > $product_quantity </td>
+
+    					        <td width='95' align='center' >" ; 
+    					        	
+    					        		// echo $product_subtotal_price / $product_quantity  ;
+    					        		if($product_subtotal_price == $product_total_price){
+    					        			$table2 .= $product_subtotal_price / $product_quantity  ;
+    					        		}else{
+    					        			$table2 .= "<strike>". $product_subtotal_price / $product_quantity . "</strike>" . $product_total_price / $product_quantity   ;
+    					        		}
+
+    					    $table2 .="</td>
+
+    					        <td width='77' align='center' > $product_total_price </td>
+    					      </tr>" ;
+    					    $i++ ; 
+    					} 
+    					// Loop  Ends 
+
+    					
+
+
+    					$table3 ='	</table>'; 
+
+    					$style = '<style type="text/css">
+
+    								table, th, td {
+    								    border: 1px solid black;
+    								}
+
+    								
+
+    							</style>' ; 
+
+
+    				$html = $html1 . "<br/>" . $table1 . $table2 . $table3 .$style  ; 
+
+    				// output the HTML content
+    				$pdf->writeHTML($html, true, false, true, false, '');
+
+    				// - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    				// reset pointer to the last page
+    				$pdf->lastPage();
+
+    				// ---------------------------------------------------------
+
+    				//Close and output PDF document
+    				$pdf->Output( 'invoice-'.$order->id.'-'.$order->billing_first_name.'.pdf', 'I');
+
+    				//============================================================+
+    				// END OF FILE
+    				//============================================================+
+
+    				
+
+    			}
+    			//  ############# Test Ends ##################
+
+    			// ################# Real worke Starts ###############
+
+    			public function viewinps($value=''){
+    				require_once( plugin_dir_path( __FILE__ ) . '/invoice-1.php');	
+    			}
+    			// ################# Real worke Ends ###############
 
 
 
