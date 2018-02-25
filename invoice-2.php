@@ -61,12 +61,28 @@
 
 	// Woocommerce Query Ends
 
+	$style = '<style type="text/css">
+
+				table, th, td {
+				    border: 1px solid black;
+				}
+
+				#ordertable{
+					background-color:#7f7f7f;
+				}
+
+				
+
+				
+
+			</style>' ; 
+
 	$header ='<img src="http://localhost/componentsource/wp-content/uploads/2017/11/fabicon-3.png" height="42" width="42">';
 
 	// create some HTML content
 	$html1 = '
 			<br>
-			<table cellpadding="3" style="width:99% ; margin-bottom: 50px ;">
+			<table id="info" cellpadding="3" style="width:99% ; margin-bottom: 50px ;">
 
 				<tr style="background-color:#7f7f7f; color:#e5e5e5;" >
 				    <th>Billing Address :</th>
@@ -114,14 +130,14 @@
 			</p>
 			' ;
 
-		$table1 = '<table cellpadding="5" cellspacing="0"  width="100%">
+		$table1 = '<table id="ordertable" cellpadding="5" cellspacing="0"  width="100%">
 			  
 			  <tr style="background-color:#7f7f7f;color:#e5e5e5;">
-			   <td width="35" align="center"><b>#</b></td>
-			   <td width="370" align="center"><b>Product Name</b></td>
-			   <td width="55" align="center"><b>Qty</b></td>
-			   <td width="95" align="center"> <b>Unit Price</b></td>
-			   <td width="77" align="center"><b>Total</b></td>
+			   <td  align="center"><b>#</b></td>
+			   <td  align="center"><b>Product Name</b></td>
+			   <td  align="center"><b>Qty</b></td>
+			   <td  align="center"> <b>Unit Price</b></td>
+			   <td  align="center"><b>Total</b></td>
 			  </tr>
 
 			  ' ;
@@ -139,9 +155,9 @@
 		    $product_total_price = $item_values['total'];
 		    // ..../...
 		    $table2 .= "  <tr>
-		        <td width='35' align='center' > $i </td>
-		        <td width='370' align='center' >$product_name </td>
-		        <td width='55' align='center' > $product_quantity </td>
+		        <td  align='center' > $i </td>
+		        <td  align='center' >$product_name </td>
+		        <td  align='center' > $product_quantity </td>
 
 		        <td width='95' align='center' >" ; 
 		        	
@@ -154,7 +170,7 @@
 
 		    $table2 .="</td>
 
-		        <td width='77' align='center' > $product_total_price </td>
+		        <td  align='center' > $product_total_price </td>
 		      </tr>" ;
 		    $i++ ; 
 		} 
@@ -203,23 +219,17 @@
 					Make all checks payable to [Your Company Name]
 					<br>
 					Thank you for your business!
+					<br>
+					Number 2 invoice 
 
 					<p>
 				";
 
-		$style = '<style type="text/css">
-
-					table, th, td {
-					    border: 1px solid black;
-					}
-
-					
-
-				</style>' ; 
+		
 
 
 	// $html = $header.$html1 . "<br/>" . $table1 . $table2 . $table3 .$style  ; 
-	$html = $header.$html1 . "<br/>" . $table1 . $table2 . $table3 .$table4 .$style .$footer1  ; 
+	$html = $header.$html1 . "<br/>" . $table1 . $table2 . $table3 .$table4 .$footer1 .$style   ; 
 
 	// output the HTML content
 	$pdf->writeHTML($html, true, false, true, false, '');
