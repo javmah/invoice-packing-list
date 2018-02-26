@@ -62,24 +62,25 @@ $html = '
 
 		</style>' ;
 		// rowspan="2"
-		$header = '
-			<p><img src="http://via.placeholder.com/350x150"></p>
-		';
+		$header = ' ';
 
 		$table = '  
 			<table style="width:100%">
 			  <tr>
-			    <td> 
+			    <td style="width:65%"> 
 			    	<p><img src="http://via.placeholder.com/350x150"></p> 
 			    </td>
-			    <td>
+			    <td style="width:35%">
+			    	<h2 style="color:#999999; "> INVOICE </h2>
 			    	<p>  
 			    		<b>leetech</b><br>
 			    		124 / Kha , Majar co-opperativ Market
 			    		<br>
-			    		Dhaka – 1216
-			    		<br>
+			    		Dhaka – 1216 , 
 			    		Bangladesh
+			    		<br>
+			    		tel: +01775-787641  ,
+			    		email : leetech.info@gmail.com 
 			    	</p>
 			    </td>
 			  </tr>
@@ -88,40 +89,40 @@ $html = '
 
 		$table1='<table id="customers">
 			  <tr>
-			    <th> Billing Address </th>
-			    <th> Shipping Address  </th>
-			    <th> Order details </th>
+			    <th style="width:33%" > Billing Address </th>
+			    <th style="width:33%" > Shipping Address  </th>
+			    <th style="width:33%" > Order details </th>
 			  </tr>
 
 			  <tr>
 
 			  	<td>TTC Company</td>
 			  	<td> TTC Bagabond </td>
-			    <td  > Invoice Number: 420 </td>
+			    <td  > Invoice Number: <i> <b> 420 </b> </i> </td>
 			  </tr>
 
 			  <tr>
 			  	<td>Kristina R Maxwell</td>
 			  	<td> Edith J Conkling </td>
-			  	<td> Invoice Date:	November 21, 2017 </td>
+			  	<td> Invoice Date: <i>	November 21, 2017 </i> </td>
 			  </tr>
 
 			  <tr>
 			  	<td>2907 Caynor Circle</td>
 			  	<td> 46 Stratford Court </td>
-			    <td>Order Number: 142 </td>
+			    <td> Order Number: <i><b> 142 </b></i> </td>
 			  </tr>
 
 			  <tr>
 			  	<td>Branchburg</td>
 			  	<td> Raleigh </td>
-			    <td> Order Date:	November 08, 2017 </td>
+			    <td> Order Date: <i>	November 08, 2017 </i> </td>
 			  </tr>
 
 			  <tr>
 			  	<td>New Jersey 08817 </td>
 			  	<td> North Carolina 27601 </td>
-			    <td> Payment Method:Check payments </td>
+			    <td> Payment Method: <i> Check payments </i> </td>
 			  </tr>
 			  
 			</table>
@@ -241,10 +242,32 @@ $html = '
 
 	$table2 .='</table>';
 
+	$order_note = '
+		<br>
+		<table id="customers">
+		  <tr>
+		    <th> Order Note : </th>
+		  </tr>
+		  <tr>
+		    <td>
+		    	<p style ="padding-left: 10px ; padding-right:10px" >
+		    		it is my first order but shipping charge applied on bill. please deliver 2 different color bread board if possible.
+		   		</p>
+		    </td>
+		  </tr>
+		</table>
+	';
+
+	$footer_note = "<p style='text-align: center;color:#4c4c4c ;  ' > 
+		Make all cheacks payable  to City Corp
+	</p>
+	<h3 style='text-align: center;color:#999999 ; ' > THANK YOU FOR YOUR BUSINESS  </h3>
+	" ;
+
 
 
 // $dompdf->loadHtml('hello world');
-$dompdf->loadHtml($table.$html.$table1.$table2);
+$dompdf->loadHtml($table.$html.$table1.$table2 .$order_note. $footer_note);
 
 // Enable Image  Bisoncode
 $dompdf->set_option('isRemoteEnabled', TRUE);
