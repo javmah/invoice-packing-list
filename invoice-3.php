@@ -1,286 +1,244 @@
-<?php
-//Include the main DomPDF library (search for installation path).
-require_once( plugin_dir_path( __FILE__ ) . '/dompdf/lib/html5lib/Parser.php');
-require_once( plugin_dir_path( __FILE__ ) . '/dompdf/lib/php-font-lib/src/FontLib/Autoloader.php');
-require_once( plugin_dir_path( __FILE__ ) . '/dompdf/lib/php-svg-lib/src/autoload.php');
-require_once( plugin_dir_path( __FILE__ ) . '/dompdf/src/Autoloader.php');
-Dompdf\Autoloader::register();
-// reference the Dompdf namespace
-use Dompdf\Dompdf;
+<?php 
+	// create new PDF document
+	$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-// instantiate and use the dompdf class
-$dompdf = new Dompdf();
+	// set document information
+	$pdf->SetCreator(PDF_CREATOR);
+	$pdf->SetAuthor('Nicola Asuni');
+	$pdf->SetTitle('TCPDF Example 006');
+	$pdf->SetSubject('TCPDF Tutorial');
+	$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
-// Woocommerce Query Starts 
-// Woocommerce Query Ends 
+	// remove default header/footer
+	$pdf->setPrintHeader(false);
+	$pdf->setPrintFooter(false);
 
-$html = '
-		<style>
-		#customers {
-		    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-		    border-collapse: collapse;
-		    width: 100%;
-		}
+	// set default monospaced font
+	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-		#customers td, #customers th {
-		    border: 1px solid #ddd;
-		    padding: 8px;
-		}
+	// set margins
+	// $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+	$pdf->SetMargins(PDF_MARGIN_LEFT, 5 , PDF_MARGIN_RIGHT);
 
-		#customers tr:nth-child(even){background-color: #f2f2f2;}
+	// set auto page breaks
+	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
-		#customers tr:hover {background-color: #ddd;}
+	// set image scale factor
+	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-		#customers th {
-		    padding-top: 12px;
-		    padding-bottom: 12px;
-		    text-align: left;
-		    background-color: #4CAF50;
-		    color: white;
-		}
+	// set some language-dependent strings (optional)
+	if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+	    require_once(dirname(__FILE__).'/lang/eng.php');
+	    $pdf->setLanguageArray($l);
+	}
 
-		#number{
-			width:40px; 
-		}
-
-		#qty{
-			width:50px; 
-		}
-
-		#unit_price{
-			width:150px; 
-		}
-
-		#total{
-			width:130px;
-		}
-
-		#subtotal_col {
-
-		}
+	// ---------------------------------------------------------
 
 
-		</style>' ;
-		// rowspan="2"
-		$header = ' ';
+	// set font
+	$pdf->SetFont('dejavusans', '', 10);
 
-		$table = '  
-			<table style="width:100%">
-			  <tr>
-			    <td style="width:65%"> 
-			    	<p><img src="http://via.placeholder.com/350x150"></p> 
-			    </td>
-			    <td style="width:35%">
-			    	<h2 style="color:#999999; "> INVOICE </h2>
-			    	<p>  
-			    		<b>leetech</b><br>
-			    		124 / Kha , Majar co-opperativ Market
-			    		<br>
-			    		Dhaka – 1216 , 
-			    		Bangladesh
-			    		<br>
-			    		tel: +01775-787641  ,
-			    		email : leetech.info@gmail.com 
-			    	</p>
-			    </td>
-			  </tr>
+	// add a page
+	$pdf->AddPage();
+
+	// writeHTML($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='')
+	// writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=0, $reseth=true, $align='', $autopadding=true)
+
+	// New Starts
+	$pdf->SetPrintHeader(false);
+	$pdf->SetPrintFooter(false);
+	// New Ends
+
+
+	// Woocommerce Query Starts 
+	$status = (isset($_GET['status']) ? $_GET['status'] : false); // status
+	$id =  (isset($_GET['id']) ? $_GET['id'] : false); // id
+	$order = wc_get_order( $id  );
+
+	// echo "<pre>" ;
+	// print_r( $order->order_date) ;
+	// echo "<pre/>" ;
+
+	// Woocommerce Query Ends
+
+	$header ='<img src="http://localhost/componentsource/wp-content/uploads/2017/11/fabicon-3.png" height="42" width="42">';
+
+	// create some HTML content
+	$html1 = '
+			<br>
+			<table cellpadding="3" style="width:99% ; margin-bottom: 50px ;">
+
+				<tr style="background-color:#7f7f7f; color:#e5e5e5;" >
+				    <th>Billing Address :</th>
+				    <th>Shipping Address :  </th> 
+				    <th>Order details </th>
+				</tr>
+
+			  	
+				<tr>
+				  	<td align="center" >
+				  		<b> Billing Address : </b>
+				  		<br>
+				  		Name : '. $order->billing_first_name .'
+				  		<br> Company : '. $order->billing_company .' 
+				  		<br> Address 1 : '. $order->billing_address_1 .'
+				  		<br> Address 2: '. $order->billing_address_2 .'
+				  		<br> Post Code : '. $order->billing_postcode .'
+				  		<br> billing Country : '. $order->billing_country . '
+				  	</td>
+
+				    <td align="center" >
+				    	<b> Shipping Address : </b>
+				    	<br>
+				    	Name : '. $order->shipping_last_name .'
+				    	<br> Company : '. $order->shipping_company .' 
+				    	<br> Address 1 : '. $order->shipping_address_1 .'
+				    	<br> Address 2: '. $order->shipping_address_2 .'
+				    	<br> city : '. $order->shipping_city 	.'
+				    	<br> state : '. $order->shipping_state 	.'
+				    	<br> Post Code : '. $order->billing_postcode .'
+				    	<br> billing Country : '. $order->shipping_country . '
+				    </td>
+
+
+				    <td align="center"  >
+				    	<span > Order Number: '. $order->id.'</span><br/>
+				    	<span > Order Date: '. $order->order_date .' </span><br/>
+				    	<span > Payment Method: '. $order->payment_method_title.'</span><br/>
+					</td>
+			    </tr>
 			</table>
-		';
 
-		$table1='<table id="customers">
-			  <tr>
-			    <th style="width:33%" > Billing Address </th>
-			    <th style="width:33%" > Shipping Address  </th>
-			    <th style="width:33%" > Order details </th>
-			  </tr>
 
-			  <tr>
+			<p> 
+			</p>
+			' ;
 
-			  	<td>TTC Company</td>
-			  	<td> TTC Bagabond </td>
-			    <td  > Invoice Number: <i> <b> 420 </b> </i> </td>
-			  </tr>
-
-			  <tr>
-			  	<td>Kristina R Maxwell</td>
-			  	<td> Edith J Conkling </td>
-			  	<td> Invoice Date: <i>	November 21, 2017 </i> </td>
-			  </tr>
-
-			  <tr>
-			  	<td>2907 Caynor Circle</td>
-			  	<td> 46 Stratford Court </td>
-			    <td> Order Number: <i><b> 142 </b></i> </td>
-			  </tr>
-
-			  <tr>
-			  	<td>Branchburg</td>
-			  	<td> Raleigh </td>
-			    <td> Order Date: <i>	November 08, 2017 </i> </td>
-			  </tr>
-
-			  <tr>
-			  	<td>New Jersey 08817 </td>
-			  	<td> North Carolina 27601 </td>
-			    <td> Payment Method: <i> Check payments </i> </td>
-			  </tr>
+		$table1 = '<table cellpadding="5" cellspacing="0"  width="100%">
 			  
-			</table>
-			<br>
-			<br>
-	';
+			  <tr style="background-color:#7f7f7f;color:#e5e5e5;">
+			   <td width="35" align="center"><b>#</b></td>
+			   <td width="370" align="center"><b>Product Name</b></td>
+			   <td width="55" align="center"><b>Qty</b></td>
+			   <td width="95" align="center"> <b>Unit Price</b></td>
+			   <td width="77" align="center"><b>Total</b></td>
+			  </tr>
+
+			  ' ;
+
+		// Loop Starts
 		
-	$table2 ='<table id="customers">
-		  <tr>
-		  	<th id="number" > # </th>
-		    <th>Product Name</th>
-		    <th id="qty" >Qty</th>
-		    <th id="unit_price">Unit Price</th>
-		    <th id="total">Total</th>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>';
+		$i = 1 ; 
+		foreach($order->get_items() as $item_id => $item_values){
+		    // Getting the product ID
+		    
+		    $product_id = $item_values['product_id'];
+		    $product_name = $item_values['name'];
+		    $product_quantity = $item_values['quantity'];
+		    $product_subtotal_price = $item_values['subtotal'];
+		    $product_total_price = $item_values['total'];
+		    // ..../...
+		    $table2 .= "  <tr>
+		        <td width='35' align='center' > $i </td>
+		        <td width='370' align='center' >$product_name </td>
+		        <td width='55' align='center' > $product_quantity </td>
 
-	$table2 .='
-		<tr>
-			<td colspan="2" > </td>
-			<td colspan="2" id="subtotal_col"  > Sub total </td>
-		  	<td> 160 </td>
-		</tr>
-		<tr>
-			<td colspan="2" > </td>
-			<td colspan="2" id="subtotal_col" > Shipping </td>
-		  	<td> 160 </td>
-		</tr>
-		<tr>
-			<td colspan="2" > </td>
-			<td colspan="2" id="subtotal_col"  > Total Tax </td>
-		  	<td> 160 </td>
-		</tr>
+		        <td width='95' align='center' >" ; 
+		        	
+		        		// echo $product_subtotal_price / $product_quantity  ;
+		        		if($product_subtotal_price == $product_total_price){
+		        			$table2 .= $product_subtotal_price / $product_quantity  ;
+		        		}else{
+		        			$table2 .= "<strike>". $product_subtotal_price / $product_quantity . "</strike>" . $product_total_price / $product_quantity   ;
+		        		}
 
-		<tr>
-			<td colspan="2" > </td>
-			<td colspan="2" id="subtotal_col"  > discount total </td>
-		  	<td> 160 </td>
-		</tr>
+		    $table2 .="</td>
 
-		<tr>
-			<td colspan="2"> </td>
-			<td colspan="2" id="subtotal_col"  > Invoice total </td>
-		  	<td> 160 </td>
-		</tr>
-	';
+		        <td width='77' align='center' > $product_total_price </td>
+		      </tr>" ;
+		    $i++ ; 
+		} 
+		// Loop  Ends 
+
+		
+		$table3 = "	<tr>
+    				    <td> </td> 
+    				    <td> Shipping total  </td>
+    				    <td> </td>
+    				    <td>  </td>
+    				    <td><b> {$order->shipping_total} </b></td>
+    				</tr>
+
+    				<tr>
+    				    <td> </td> 
+    				    <td> discount total  </td>
+    				    <td> </td>
+    				    <td>  </td>
+    				    <td><b> {$order->discount_total} </b></td>
+    				</tr>
 
 
-	$table2 .='</table>';
+    				<tr>
+    				    <td> </td> 
+    				    <td> Total Tax </td>
+    				    <td> </td>
+    				    <td>  </td>
+    				    <td><b> {$order->total_tax} </b></td>
+    				</tr>
 
-	$order_note = '
-		<br>
-		<table id="customers">
-		  <tr>
-		    <th> Order Note : </th>
-		  </tr>
-		  <tr>
-		    <td>
-		    	<p style ="padding-left: 10px ; padding-right:10px" >
-		    		it is my first order but shipping charge applied on bill. please deliver 2 different color bread board if possible.
-		   		</p>
-		    </td>
-		  </tr>
-		</table>
-	';
+    				<tr>
+    				    <td> </td> 
+    				    <td> Total  </td>
+    				    <td> </td>
+    				    <td> </td>
+    				    <td><b> {$order->total} </b></td>
+    				</tr>
 
-	$footer_note = "<p style='text-align: center;color:#4c4c4c ;  ' > 
-		Make all cheacks payable  to City Corp
-	</p>
-	<h3 style='text-align: center;color:#999999 ; ' > THANK YOU FOR YOUR BUSINESS  </h3>
-	" ;
+    				";
+
+		$table4 ='</table>'; 
+
+		$footer1 = "<p>
+
+					Make all checks payable to [Your Company Name]
+					<br>
+					Thank you for your business!
+
+					<p>
+				";
+
+		$style = '<style type="text/css">
+
+					table, th, td {
+					    border: 1px solid black;
+					}
+
+					
+
+				</style>' ; 
+
+
+	// $html = $header.$html1 . "<br/>" . $table1 . $table2 . $table3 .$style  ; 
+	$html = $header.$html1 . "<br/>" . $table1 . $table2 . $table3 .$table4 .$style .$footer1  ; 
+
+	// output the HTML content
+	$pdf->writeHTML($html, true, false, true, false, '');
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	// reset pointer to the last page
+	$pdf->lastPage();
+
+	// ---------------------------------------------------------
+
+	//Close and output PDF document
+	$pdf->Output( 'invoice-'.$order->id.'-'.$order->billing_first_name.'.pdf', 'I');
+
+	//============================================================+
+	// END OF FILE
+	//============================================================+
 
 
 
-// $dompdf->loadHtml('hello world');
-$dompdf->loadHtml($table.$html.$table1.$table2 .$order_note. $footer_note);
+ ?>
 
-// Enable Image  Bisoncode
-$dompdf->set_option('isRemoteEnabled', TRUE);
-
-// (Optional) Setup the paper size and orientation
-$dompdf->setPaper('A4', 'landscape');
-
-// Render the HTML as PDF
-$dompdf->render();
-
-// Output the generated PDF to Browser
-$dompdf->stream();
-
-
-
-?>
