@@ -71,7 +71,9 @@ Text Domain: wcip
     				add_action( 'admin_init', array($this ,'register_my_cool_plugin_settings' ) ) ;
     				add_action('admin_menu', array($this ,'my_cool_plugin_create_menu') );
 
-    				add_action("admin_init",array($this , "display_options") ) ;
+    				//  testting WP seattings
+    				$this->settings_api = new WeDevs_Settings_API; 
+    				add_action( 'admin_init', array($this, 'admin_init') );
     			}
 
     			// ########################## Another Way ###########################
@@ -268,27 +270,7 @@ Text Domain: wcip
     			
     			# Adding External PDF Layout Link Starts
     			public function viewinps($value=''){
-    				// require_once( plugin_dir_path( __FILE__ ) . '/invoice-1.php');	
-    				?>
-    				            <div class="wrap">
-    				            <div id="icon-options-general" class="icon32"></div>
-    				            <h1>Theme Options</h1>
-    				            <form method="post" action="options.php">
-    				                <?php
-    				                
-    				                    //add_settings_section callback is displayed here. For every new section we need to call settings_fields.
-    				                    settings_fields("header_section");
-    				                    
-    				                    // all the add_settings_field callbacks is displayed here
-    				                    do_settings_sections("theme-options");
-    				                
-    				                    // Add the submit button to serialize the options
-    				                    submit_button(); 
-    				                    
-    				                ?>          
-    				            </form>
-    				        </div>
-    				<?php
+    				require_once( plugin_dir_path( __FILE__ ) . '/invoice-1.php');	
     			}
     			# Adding External PDF Layout Link Ends
 
@@ -298,56 +280,178 @@ Text Domain: wcip
 
     			function invoice_paking_init() {
     				// add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function);
-    			    add_submenu_page( 'woocommerce', 'Invoice And Paking List ', 'Invoice & paking list', 'manage_options', 'Invoice_Paking', array($this, 'viewinps' ) ); 
+    			    add_submenu_page( 'woocommerce', 'Invoice And Paking List ', 'Invoice & paking list', 'manage_options', 'Invoice_Paking', array($this, 'invoice_paking_callback' ) ); 
     			}
 
+    			function invoice_paking_callback() {
+    			   // require_once( plugin_dir_path( __FILE__ ) . '/admin_page_layout-2.php');
+    			  	// echo "Hello World How Are You ";
+
+    			  	echo '<div class="wrap">';
+
+    			  	$this->settings_api->show_navigation();
+    			  	$this->settings_api->show_forms();
+
+    			  	echo '</div>';
+    			}
     			
 
     			# Adding Settings Page And Menu item Ends
-    			//this action callback is triggered when wordpress is ready to add new items to menu.
-
-    			    // add_action("admin_menu", "add_new_menu_items");
 
 
-    			    /*WordPress Settings API Demo*/
+    			#woardpress settings API Test Starts
 
-    			    function display_options()
-    			    {
-    			        //section name, display name, callback to print description of section, page to which section is attached.
-    			        add_settings_section("header_section", "Header Options", array($this,"display_header_options_content"), "theme-options");
+    			function admin_init() {
 
-    			        //setting name, display name, callback to print form element, page in which field is displayed, section to which it belongs.
-    			        //last field section is optional.
-                        #add_settings_field( $id,       $title,         $callback,                           $page,              $section,      $args );
-    			        add_settings_field("header_logo", "Logo Url",array($this, "display_logo_form_element"), "theme-options", "header_section");
-    			        add_settings_field("advertising_code", "Ads Code", array($this,"display_ads_form_element"), "theme-options", "header_section");
+    			    //set the settings
+    			    $this->settings_api->set_sections( $this->get_settings_sections() );
+    			    $this->settings_api->set_fields( $this->get_settings_fields() );
 
-    			        //section name, form element name, callback for sanitization
-    			        register_setting("header_section", "header_logo");
-    			        register_setting("header_section", "advertising_code");
-    			    }
+    			    //initialize settings
+    			    $this->settings_api->admin_init();
+    			}
 
-    			    function display_header_options_content(){
-    			    	echo "The header of the theme";
-    			    }
+    			function get_settings_sections() {
+    			    $sections = array(
+    			        array(
+    			            'id'    => 'wedevs_basics',
+    			            'title' => __( 'Basic Settings', 'wedevs' )
+    			        ),
+    			        array(
+    			            'id'    => 'wedevs_advanced',
+    			            'title' => __( 'Advanced Settings', 'wedevs' )
+    			        )
+    			    );
+    			    return $sections;
+    			}
 
-    			    function display_logo_form_element()
-    			    {
-    			        //id and name of form element should be same as the setting name.
-    			        ?>
-    			            <input type="text" name="header_logo" id="header_logo" value="<?php echo get_option('header_logo'); ?>" />
-    			        <?php
-    			    }
-    			    function display_ads_form_element()
-    			    {
-    			        //id and name of form element should be same as the setting name.
-    			        ?>
-    			            <input type="text" name="advertising_code" id="advertising_code" value="<?php echo get_option('advertising_code'); ?>" />
-    			        <?php
-    			    }
+    			function get_settings_fields() {
+    			    $settings_fields = array(
+    			        'wedevs_basics' => array(
+    			            array(
+    			                'name'              => 'text_val',
+    			                'label'             => __( 'Text Input', 'wedevs' ),
+    			                'desc'              => __( 'Text input description', 'wedevs' ),
+    			                'placeholder'       => __( 'Text Input placeholder', 'wedevs' ),
+    			                'type'              => 'text',
+    			                'default'           => 'Title',
+    			                'sanitize_callback' => 'sanitize_text_field'
+    			            ),
+    			            array(
+    			                'name'              => 'number_input',
+    			                'label'             => __( 'Number Input', 'wedevs' ),
+    			                'desc'              => __( 'Number field with validation callback `floatval`', 'wedevs' ),
+    			                'placeholder'       => __( '1.99', 'wedevs' ),
+    			                'min'               => 0,
+    			                'max'               => 100,
+    			                'step'              => '0.01',
+    			                'type'              => 'number',
+    			                'default'           => 'Title',
+    			                'sanitize_callback' => 'floatval'
+    			            ),
+    			            array(
+    			                'name'        => 'textarea',
+    			                'label'       => __( 'Textarea Input', 'wedevs' ),
+    			                'desc'        => __( 'Textarea description', 'wedevs' ),
+    			                'placeholder' => __( 'Textarea placeholder', 'wedevs' ),
+    			                'type'        => 'textarea'
+    			            ),
+    			            array(
+    			                'name'        => 'html',
+    			                'desc'        => __( 'HTML area description. You can use any <strong>bold</strong> or other HTML elements.', 'wedevs' ),
+    			                'type'        => 'html'
+    			            ),
+    			            array(
+    			                'name'  => 'checkbox',
+    			                'label' => __( 'Checkbox', 'wedevs' ),
+    			                'desc'  => __( 'Checkbox Label', 'wedevs' ),
+    			                'type'  => 'checkbox'
+    			            ),
+    			            array(
+    			                'name'    => 'radio',
+    			                'label'   => __( 'Radio Button', 'wedevs' ),
+    			                'desc'    => __( 'A radio button', 'wedevs' ),
+    			                'type'    => 'radio',
+    			                'options' => array(
+    			                    'yes' => 'Yes',
+    			                    'no'  => 'No'
+    			                )
+    			            ),
+    			            array(
+    			                'name'    => 'selectbox',
+    			                'label'   => __( 'A Dropdown', 'wedevs' ),
+    			                'desc'    => __( 'Dropdown description', 'wedevs' ),
+    			                'type'    => 'select',
+    			                'default' => 'no',
+    			                'options' => array(
+    			                    'yes' => 'Yes',
+    			                    'no'  => 'No'
+    			                )
+    			            ),
+    			            array(
+    			                'name'    => 'password',
+    			                'label'   => __( 'Password', 'wedevs' ),
+    			                'desc'    => __( 'Password description', 'wedevs' ),
+    			                'type'    => 'password',
+    			                'default' => ''
+    			            ),
+    			            array(
+    			                'name'    => 'file',
+    			                'label'   => __( 'File', 'wedevs' ),
+    			                'desc'    => __( 'File description', 'wedevs' ),
+    			                'type'    => 'file',
+    			                'default' => '',
+    			                'options' => array(
+    			                    'button_label' => 'Choose Image'
+    			                )
+    			            )
+    			        ),
+    			        'wedevs_advanced' => array(
+    			            array(
+    			                'name'    => 'color',
+    			                'label'   => __( 'Color', 'wedevs' ),
+    			                'desc'    => __( 'Color description', 'wedevs' ),
+    			                'type'    => 'color',
+    			                'default' => ''
+    			            ),
+    			            array(
+    			                'name'    => 'password',
+    			                'label'   => __( 'Password', 'wedevs' ),
+    			                'desc'    => __( 'Password description', 'wedevs' ),
+    			                'type'    => 'password',
+    			                'default' => ''
+    			            ),
+    			            array(
+    			                'name'    => 'wysiwyg',
+    			                'label'   => __( 'Advanced Editor', 'wedevs' ),
+    			                'desc'    => __( 'WP_Editor description', 'wedevs' ),
+    			                'type'    => 'wysiwyg',
+    			                'default' => ''
+    			            ),
+    			            array(
+    			                'name'    => 'multicheck',
+    			                'label'   => __( 'Multile checkbox', 'wedevs' ),
+    			                'desc'    => __( 'Multi checkbox description', 'wedevs' ),
+    			                'type'    => 'multicheck',
+    			                'default' => array('one' => 'one', 'four' => 'four'),
+    			                'options' => array(
+    			                    'one'   => 'One',
+    			                    'two'   => 'Two',
+    			                    'three' => 'Three',
+    			                    'four'  => 'Four'
+    			                )
+    			            ),
+    			        )
+    			    );
 
-    			    //this action is executed after loads its core, after registering all actions, finds out what page to execute and before producing the actual output(before calling any action callback)
-    			    // add_action("admin_init", "display_options");
+    			    return $settings_fields;
+    			}
+
+
+    			
+
+
+    			#woardpress settings API Test Ends
     			
 
     		}
