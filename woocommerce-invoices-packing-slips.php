@@ -72,6 +72,22 @@ Text Domain: wcip
     				add_action('admin_menu', array($this ,'my_cool_plugin_create_menu') );
 
     				add_action("admin_init",array($this , "display_options") ) ;
+
+                    // Woocommerce Setting Page Tab Array settings 
+                    // add_filter( $tag, $function_to_add, $priority = 10, $accepted_args = 1 )
+                    add_filter( 'woocommerce_settings_tabs_array', array($this, 'add_settings_tab'), 50 );
+                    // Showing Settings Fields
+                    add_action( 'woocommerce_settings_invoice', array($this, 'invoice_setting_tab_admin_page'));
+                    // Save settings data 
+                    add_action( 'woocommerce_update_options_invoice', array($this, 'invoice_update_settings'));
+
+                    ############################ Paking List ###########################################
+                    // Showing Settings Fields for paking List
+                    add_action( 'woocommerce_settings_paking_list', array($this, 'paking_list_setting_tab_admin_page'));
+                    // Save settings data for Paking List
+                    add_action( 'woocommerce_update_options_paking_list', array($this, 'paking_list_update_settings'));
+
+
     			}
 
     			// ########################## Another Way ###########################
@@ -87,208 +103,389 @@ Text Domain: wcip
     				 	</a>";
     			}
 
+                public static function add_settings_tab( $settings_tabs ) {
+                    $settings_tabs['invoice'] = __( 'Invoice','woocommerce-settings-tab-demo' );
+                    $settings_tabs['paking_list'] = __( 'Paking List','woocommerce-settings-tab-demo' );
+                        return $settings_tabs;
+                }
+
+                public function invoice_setting_tab_admin_page($value=''){
+                   // echo "Hello From javed , How are you doing Guyes ";
+                    // woocommerce_admin_fields(self::get_settings()); 
+                    woocommerce_admin_fields(
+                        array(
+                            'section_title' => array(
+                                'name'     => __( 'Section Title', 'woocommerce-invoice' ),
+                                'type'     => 'title',
+                                'desc'     => '',
+                                
+                                'id'       => 'section_title'
+                            ),
+
+                            #Select theme dd
+                            'select_theme ' => array(
+                                'name'    => __( 'select Theme ', 'woocommerce-invoice' ),
+                                'label'   => __( 'A Dropdown', 'wedevs' ),
+                                'desc'    => __( 'Dropdown description', 'wedevs' ),
+                                'type'    => 'select',
+                                'id'      =>'select_theme' ,
+                                'default' => 'no',
+                                'options' => array(
+                                    'default' => 'default',
+                                    'modern'  => 'modern'
+                                )
+                            ),
+                            # default Color
+                            'invoice_prime_color ' => array(
+                                 'name'    => __( 'Invoice Prime Color', 'woocommerce-invoice' ),
+                                 'label'   => __( 'Advanced Editor', 'woocommerce-invoice' ),
+                                 'desc'    => __( 'WP_Editor description', 'wedevs' ),
+                                 'desc_tip' => 'Hmm is Working',
+                                 'type'    => 'color',
+                                 'id'      =>'invoice_prime_color' ,
+                                 'default' => '#ffa'
+                            ),
+                            # Logo URL 
+                            'logo_url' => array(
+                                'name' => __( ' Invoice Logo Url', 'woocommerce-settings-tab-demo' ),
+                                'type' => 'text',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'logo_url'
+                            ),
+                            # PDF Page SIze 
+                            'pdf_page_size ' => array(
+                                'name'    => __( 'Invoice PDF Page Size', 'woocommerce-invoice' ),
+                                'label'   => __( 'A Dropdown', 'wedevs' ),
+                                'desc'    => __( 'Dropdown description', 'wedevs' ),
+                                'type'    => 'select',
+                                'id'      =>'pdf_page_size' ,
+                                'default' => 'no',
+                                'options' => array(
+                                    'a4'  => 'A 4',
+                                    'a5'  => 'A 5'
+                                )
+                            ),
+                            # Button Click event 
+                            'button_click_action ' => array(
+                                'name'    => __( 'Invoice Icon Click Action', 'woocommerce-invoice' ),
+                                'label'   => __( 'A Dropdown', 'wedevs' ),
+                                'desc'    => __( 'Dropdown description', 'wedevs' ),
+                                'type'    => 'select',
+                                'id'      =>'button_click_action' ,
+                                'default' => 'no',
+                                'options' => array(
+                                    'open_in_new_table' => 'Open invoice in New table ',
+                                    'downloard'  => 'Downloard invoice '
+                                )
+                            ),
+                            # Show Shipping Address 
+                            'show_shipping_address' => array(
+                                'name' => __( ' Show Shipping Address ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_shipping_address'
+                            ),
+                            # Show product thumnail on Invoice 
+                            'show_product_thumbnail' => array(
+                                'name' => __( ' Show Product thumbnail ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_product_thumbnail'
+                            ),
+                            # Show Order Note On Invoice 
+                            'show_order_note' => array(
+                                'name' => __( ' Show Order note ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_order_note'
+                            ),
+                            # Show Vat On Invoice 
+                            'show_vat' => array(
+                                'name' => __( ' Show Vat on invoice ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_vat'
+                            ),
+                            # Show Qty 
+                            'show_qty' => array(
+                                'name' => __( ' Show quantity on invoice ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_vat'
+                            ),
+                            # Show Discount 
+                            'show_discount' => array(
+                                'name' => __( ' Show Discount on invoice ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_discount'
+                            ),
+                            #Footer Note 
+                            'invoice_footer_not_1' => array(
+                                'name' => __( 'Invoice footer not 1 ', 'woocommerce-invoice' ),
+                                'type' => 'textarea',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'invoice_footer_not_1'
+                            ),
+
+
+                            'section_end' => array(
+                                 'type' => 'sectionend',
+                                 'id' => 'section_end'
+                            )    
+                        )
+                    ); 
+
+                    echo "Hello Woarld";
+                }
+
+                public function invoice_update_settings($value=''){
+                    woocommerce_update_options(
+                        array(
+                            'section_title' => array(
+                                'name'     => __( 'Section Title', 'woocommerce-invoice' ),
+                                'type'     => 'title',
+                                'desc'     => '',
+                                
+                                'id'       => 'section_title'
+                            ),
+
+                            #Select theme dd
+                            'select_theme ' => array(
+                                'name'    => __( 'select Theme ', 'woocommerce-invoice' ),
+                                'label'   => __( 'A Dropdown', 'wedevs' ),
+                                'desc'    => __( 'Dropdown description', 'wedevs' ),
+                                'type'    => 'select',
+                                'id'      =>'select_theme' ,
+                                'default' => 'no',
+                                'options' => array(
+                                    'default' => 'default',
+                                    'modern'  => 'modern'
+                                )
+                            ),
+                            # default Color
+                            'invoice_prime_color ' => array(
+                                 'name'    => __( 'Invoice Prime Color', 'woocommerce-invoice' ),
+                                 'label'   => __( 'Advanced Editor', 'woocommerce-invoice' ),
+                                 'desc'    => __( 'WP_Editor description', 'wedevs' ),
+                                 'desc_tip' => 'Hmm is Working',
+                                 'type'    => 'color',
+                                 'id'      =>'invoice_prime_color' ,
+                                 'default' => '#ffa'
+                            ),
+                            # Logo URL 
+                            'logo_url' => array(
+                                'name' => __( ' Invoice Logo Url', 'woocommerce-settings-tab-demo' ),
+                                'type' => 'text',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'logo_url'
+                            ),
+                            # PDF Page SIze 
+                            'pdf_page_size ' => array(
+                                'name'    => __( 'Invoice PDF Page Size', 'woocommerce-invoice' ),
+                                'label'   => __( 'A Dropdown', 'wedevs' ),
+                                'desc'    => __( 'Dropdown description', 'wedevs' ),
+                                'type'    => 'select',
+                                'id'      =>'pdf_page_size' ,
+                                'default' => 'no',
+                                'options' => array(
+                                    'a4'  => 'A 4',
+                                    'a5'  => 'A 5'
+                                )
+                            ),
+                            # Button Click event 
+                            'button_click_action ' => array(
+                                'name'    => __( 'Invoice Icon Click Action', 'woocommerce-invoice' ),
+                                'label'   => __( 'A Dropdown', 'wedevs' ),
+                                'desc'    => __( 'Dropdown description', 'wedevs' ),
+                                'type'    => 'select',
+                                'id'      =>'button_click_action' ,
+                                'default' => 'no',
+                                'options' => array(
+                                    'open_in_new_table' => 'Open invoice in New table ',
+                                    'downloard'  => 'Downloard invoice '
+                                )
+                            ),
+                            # Show Shipping Address 
+                            'show_shipping_address' => array(
+                                'name' => __( ' Show Shipping Address ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_shipping_address'
+                            ),
+                            # Show product thumnail on Invoice 
+                            'show_product_thumbnail' => array(
+                                'name' => __( ' Show Product thumbnail ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_product_thumbnail'
+                            ),
+                            # Show Order Note On Invoice 
+                            'show_order_note' => array(
+                                'name' => __( ' Show Order note ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_order_note'
+                            ),
+                            # Show Vat On Invoice 
+                            'show_vat' => array(
+                                'name' => __( ' Show Vat on invoice ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_vat'
+                            ),
+                            # Show Qty 
+                            'show_qty' => array(
+                                'name' => __( ' Show quantity on invoice ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_qty'
+                            ),
+                            # Show Discount 
+                            'show_discount' => array(
+                                'name' => __( ' Show Discount on invoice ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_discount'
+                            ),
+                            #Footer Note 
+                            'invoice_footer_not_1' => array(
+                                'name' => __( 'Invoice footer not 1 ', 'woocommerce-invoice' ),
+                                'type' => 'textarea',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'invoice_footer_not_1'
+                            ),
+
+
+                            'section_end' => array(
+                                 'type' => 'sectionend',
+                                 'id' => 'wc_settings_tab_demo_section_end'
+                            )    
+                        )
+                    );
+                }
+
+                ####################### paking Sip ###############################
+
+                public function paking_list_setting_tab_admin_page($value=''){
+                    woocommerce_admin_fields(
+                        array(
+                            # Starts
+                            'paking_slip_section_title' => array(
+                            'name'     => __( 'Section Title', 'woocommerce-invoice' ),
+                            'type'     => 'title',
+                            'desc'     => '',
+                                
+                            'id'       => 'section_title'
+                            ),
+
+                            # select Pakingslip Template 
+
+                            'paking_list_theme' => array(
+                                'name'    => __( 'select Paking List Theme ', 'woocommerce-invoice' ),
+                                'label'   => __( 'A Dropdown', 'wedevs' ),
+                                'desc'    => __( 'Dropdown description', 'wedevs' ),
+                                'type'    => 'select',
+                                'id'      =>'paking_list_theme' ,
+                                'default' => 'no',
+                                'options' => array(
+                                    'default_list' => 'default Paking List ',
+                                    'modern_list'  => 'modern paking List'
+                                )
+                            ),
+
+                            # Show Shipping Address 
+                            'show_shipping_address_in_paking_list' => array(
+                                'name' => __( ' Show Shipping Address ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_shipping_address_in_paking_list'
+                            ),
+
+                            #Ends
+                            'paking_slip_section_end' => array(
+                                 'type' => 'sectionend',
+                                 'id' => 'section_end'
+                            ) 
+                        )
+                   );
+                }
+
+                public function paking_list_update_settings($value=''){
+                    woocommerce_update_options(
+                        array(
+                            # Starts
+                            'paking_slip_section_title' => array(
+                            'name'     => __( 'Section Title', 'woocommerce-invoice' ),
+                            'type'     => 'title',
+                            'desc'     => '',
+                                
+                            'id'       => 'section_title'
+                            ),
+
+                            # select Pakingslip Template 
+
+                            'paking_list_theme' => array(
+                                'name'    => __( 'select Paking List Theme ', 'woocommerce-invoice' ),
+                                'label'   => __( 'A Dropdown', 'wedevs' ),
+                                'desc'    => __( 'Dropdown description', 'wedevs' ),
+                                'type'    => 'select',
+                                'id'      =>'paking_list_theme' ,
+                                'default' => 'no',
+                                'options' => array(
+                                    'default_list' => 'default Paking List ',
+                                    'modern_list'  => 'modern paking List'
+                                )
+                            ),
+
+
+
+                            # Show Shipping Address 
+                            'show_shipping_address_in_paking_list' => array(
+                                'name' => __( ' Show Shipping Address ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_shipping_address_in_paking_list'
+                            ),
+
+                            #Ends
+                            'paking_slip_section_end' => array(
+                                 'type' => 'sectionend',
+                                 'id' => 'section_end'
+                            ) 
+                        )
+
+                    );
+                }
 
 
     			
 
-    			function viewinps_working_copy() {
-    			  // form processing code here
-    				if (is_user_logged_in()) {
-    					echo " Hmm you are Logged in : Good Job <br>";
-    				}
-    				$status = (isset($_GET['status']) ? $_GET['status'] : false); // status
-    				$id =  (isset($_GET['id']) ? $_GET['id'] : false); // id
-
-    				// echo "status is : " . $status ." AND id is : " . $id  ; 
-    				// echo "<br>";
-    				// echo "status is : " . $_GET['status'] ." AND id is : " . $_GET['id'] ; 
-
-    				echo "<hr>";
-    				// $orders = wc_get_orders( array('order_key' =>  $id ) );
-    				$order = wc_get_order( $id  );
-
-    				echo "<pre>";
-    				// print_r($order) ; 
-    				echo "</pre>";
-
-    				
-
-    				// Header section One Starts
-    				// Header section One  Ends 
-
-
-    				// Header section two Starts
-    				// Header section two Ends 
-
-    				// Order information Starts  
-    				echo "Order Number:		" . $order->id ."<br>" ;
-    				echo "Order Date  :		" . $order->order_date ."<br>" ;
-    				echo "Payment Method:	" . $order->payment_method_title ;
-    				// Order information Ends 
-
-    				echo "<hr>";
-
-    				// Shipping Address Starts 
-    				echo "Shipping Address:<br>";
-    				echo " name 	:" . $order->shipping_first_name . " " .  $order->shipping_last_name	. "<br>";
-    				// echo "last name 	:" . $order->shipping_last_name 	. "<br>";
-    				echo "company 		:" . $order->shipping_company 		. "<br>";
-    				echo "address 1 	:" . $order->shipping_address_1 	. "<br>";
-    				echo "address 2 	:" . $order->shipping_address_2 	. "<br>";
-    				echo "city 			:" . $order->shipping_city 			. "<br>";
-    				echo "state 		:" . $order->shipping_state			. "<br>";
-    				echo "postcode 		:" . $order->shipping_postcode 		. "<br>";
-    				echo "country 		:" . $order->shipping_country		. "<br>";
-    				
-    				// Shipping Address Ends 
-    				echo "<hr>";
-    				// Billing Address Starts
-    				echo "Billing Address: <br>";
-    				echo " name 	:" . $order->billing_first_name . " " .  $order->shipping_last_name	. "<br>";
-    				// echo "last name 	:" . $order->shipping_last_name 	. "<br>";
-    				echo "company 		:" . $order->billing_company 		. "<br>";
-    				echo "address 1 	:" . $order->billing_address_1 	. "<br>";
-    				echo "address 2 	:" . $order->billing_address_2 	. "<br>";
-    				echo "city 			:" . $order->billing_city 			. "<br>";
-    				echo "state 		:" . $order->billing_state			. "<br>";
-    				echo "postcode 		:" . $order->billing_postcode 		. "<br>";
-    				echo "country 		:" . $order->billing_country		. "<br>";
-    				// Billing Address Ends 
-    				echo "<hr>";
-    				// getting order items
-    				echo "<table border='1' >
-    				      <tr >
-    				        <th>id</th>
-    				        <th>Product Name </th>
-    				        <th>Quantity</th>
-    				        <th>Unit Price</th>
-    				        <th>Total </th>
-    				      </tr>";
-    				      $i = 1 ; 
-    				foreach($order->get_items() as $item_id => $item_values){
-    				    // Getting the product ID
-    				    
-    				    $product_id = $item_values['product_id'];
-    				    $product_name = $item_values['name'];
-    				    $product_quantity = $item_values['quantity'];
-    				    $product_subtotal_price = $item_values['subtotal'];
-    				    $product_total_price = $item_values['total'];
-    				    // ..../...
-    				    ?>
-
-    				    <!-- <table>
-    				      <tr>
-    				        <th>Product</th>
-    				        <th>Quantity</th>
-    				        <th>Price</th>
-    				      </tr> -->
-    				      <tr>
-    				        <td><?php echo $i ; ?></td>
-    				        <td><?php echo $product_name ; ?></td>
-    				        <td><?php echo $product_quantity ; ?></td>
-
-    				        <td>
-    				        	<?php 
-    				        		// echo $product_subtotal_price / $product_quantity  ;
-    				        		if($product_subtotal_price == $product_total_price){
-    				        			echo $product_subtotal_price / $product_quantity  ;
-    				        		}else{
-    				        			echo "<strike>". $product_subtotal_price / $product_quantity . "</strike>" . $product_total_price / $product_quantity   ;
-    				        		}
-
-
-    				         	?>
-    				        </td>
-
-    				        <td><?php echo $product_total_price ; ?></td>
-    				      </tr>
-    				      
-    				    <!-- </table> -->
-
-
-    				    <?php
-    				    $i++ ;
-    				    // .../...
-    				    // echo $product_id ."<br>";
-    				    // echo $product_name ."<br>";
-    				    // echo $product_quantity ."<br>";
-    				}
-    				echo "<tr>
-    				    <td> </td> 
-    				    <td> Shipping total  </td>
-    				    <td> </td>
-    				    <td>  </td>
-    				    <td><b> {$order->shipping_total} </b></td>
-    				</tr>";
-
-    				echo "<tr>
-    				    <td> </td> 
-    				    <td> discount total  </td>
-    				    <td> </td>
-    				    <td>  </td>
-    				    <td><b> {$order->discount_total} </b></td>
-    				</tr>";
-
-    				echo "<tr>
-    				    <td> </td> 
-    				    <td> Total Tax </td>
-    				    <td> </td>
-    				    <td>  </td>
-    				    <td><b> {$order->total_tax} </b></td>
-    				</tr>";
-
-    				echo "<tr>
-    				    <td> </td> 
-    				    <td> Total  </td>
-    				    <td> </td>
-    				    <td> </td>
-    				    <td><b> {$order->total} </b></td>
-    				</tr>";
-    				echo "</table>";
-
-    				echo "<hr>";
-    				echo "<pre>";
-    				// print_r($order) ; 
-    				echo "</pre>";
-
-
-
-    				// Fvooter section One  Starts 
-
-    				// Fvooter section One  Ends
-
-
-
-    				// Footer section two Starts 
-
-    				// Footer section two Ends 
-    			} 
     			// Function Ends Heare 
 
     			
     			# Adding External PDF Layout Link Starts
     			public function viewinps($value=''){
-    				// require_once( plugin_dir_path( __FILE__ ) . '/invoice-1.php');	
-    				?>
-    				            <div class="wrap">
-    				            <div id="icon-options-general" class="icon32"></div>
-    				            <h1>Theme Options</h1>
-    				            <form method="post" action="options.php">
-    				                <?php
-    				                
-    				                    //add_settings_section callback is displayed here. For every new section we need to call settings_fields.
-    				                    settings_fields("header_section");
-    				                    
-    				                    // all the add_settings_field callbacks is displayed here
-    				                    do_settings_sections("theme-options");
-    				                
-    				                    // Add the submit button to serialize the options
-    				                    submit_button(); 
-    				                    
-    				                ?>          
-    				            </form>
-    				        </div>
-    				<?php
+    				require_once( plugin_dir_path( __FILE__ ) . '/invoice-1.php');	
+    				
     			}
     			# Adding External PDF Layout Link Ends
 
@@ -298,8 +495,31 @@ Text Domain: wcip
 
     			function invoice_paking_init() {
     				// add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function);
-    			    add_submenu_page( 'woocommerce', 'Invoice And Paking List ', 'Invoice & paking list', 'manage_options', 'Invoice_Paking', array($this, 'viewinps' ) ); 
+    			    add_submenu_page( 'woocommerce', 'Invoice And Paking List ', 'Invoice & paking list', 'manage_options', 'Invoice_Paking', array($this, 'admin_page_layout' ) ); 
     			}
+
+                public function admin_page_layout($value=''){
+                    ?>
+                        <div class="wrap">
+                            <div id="icon-options-general" class="icon32"></div>
+                            <h1>Theme Options</h1>
+                            <form method="post" action="options.php">
+                                <?php
+                                
+                                    //add_settings_section callback is displayed here. For every new section we need to call settings_fields.
+                                    settings_fields("header_section");
+                                    
+                                    // all the add_settings_field callbacks is displayed here
+                                    do_settings_sections("theme-options");
+                                
+                                    // Add the submit button to serialize the options
+                                    submit_button(); 
+                                    
+                                ?>          
+                            </form>
+                        </div>
+                    <?php
+                }
 
     			
 
@@ -310,6 +530,10 @@ Text Domain: wcip
 
 
     			    /*WordPress Settings API Demo*/
+                    // Help text 
+                    // https://code.tutsplus.com/series/the-complete-guide-to-the-wordpress-settings-api--cms-624
+                    // http://wpsettingsapi.jeroensormani.com/
+                    // http://qnimate.com/wordpress-settings-api-a-comprehensive-developers-guide/ 
 
     			    function display_options()
     			    {
@@ -319,12 +543,42 @@ Text Domain: wcip
     			        //setting name, display name, callback to print form element, page in which field is displayed, section to which it belongs.
     			        //last field section is optional.
                         #add_settings_field( $id,       $title,         $callback,                           $page,              $section,      $args );
-    			        add_settings_field("header_logo", "Logo Url",array($this, "display_logo_form_element"), "theme-options", "header_section");
-    			        add_settings_field("advertising_code", "Ads Code", array($this,"display_ads_form_element"), "theme-options", "header_section");
+    			        // add_settings_field("header_logo", "Logo Url",array($this, "display_logo_form_element"), "theme-options", "header_section");
+                        // add_settings_field("advertising_code", "Ads Code", array($this,"display_ads_form_element"), "theme-options", "header_section");
+                        // My Personal Fields 
+                        add_settings_field("wcip_themeselect", "Select theme ", array($this,"wcip_themeselect_dropdown_form_element"), "theme-options", "header_section");
+                        add_settings_field("wcip_theme_colour", "Invoice Primari colour", array($this,"wcip_theme_colour_form_element"), "theme-options", "header_section");
+
+                        add_settings_field("wcip_invoice_logo", "Logo URL ", array($this,"wcip_invoice_logo_form_element"), "theme-options", "header_section");
+                        add_settings_field("wcip_paper_size", " PDF Paper Size ", array($this,"wcip_paper_size_form_element"), "theme-options", "header_section");
+                        add_settings_field("wcip_click", " Button Click Action ", array($this,"wcip_click_downloard_show_form_element"), "theme-options", "header_section");
+                        add_settings_field("wcip_show_vat", "Show Vat On Invoice ", array($this,"wcip_show_vat_form_element"), "theme-options", "header_section");
+                        add_settings_field("wcip_show_shipping_add", " Show Shipping Address  ", array($this,"wcip_show_shipping_address_form_element"),"theme-options", "header_section");
+                        add_settings_field("wcip_show_thumbnail", "Show Thumbnail ", array($this,"wcip_show_thumbnail_form_element"), "theme-options", "header_section");
+                        add_settings_field("wcip_show_qty", "show Quntaty ", array($this,"wcip_show_qty_form_element"), "theme-options", "header_section");
+                        add_settings_field("wcip_show_discout", "Show Discout ", array($this,"wcip_show_discout_form_element"), "theme-options", "header_section");
+                        add_settings_field("wcip_show_order_note","Show Order Note",array($this,"wcip_show_order_note_form_element"),"theme-options","header_section");
+    			        add_settings_field("wcip_thankyou_note","Thankyou Note",array($this,"wcip_thankyou_note_form_element"),"theme-options","header_section");
+
 
     			        //section name, form element name, callback for sanitization
-    			        register_setting("header_section", "header_logo");
-    			        register_setting("header_section", "advertising_code");
+
+    			        // register_setting("header_section", "header_logo");
+               //          register_setting("header_section", "advertising_code");
+
+                        // My Personal Fields 
+                        register_setting("header_section", "wcip_themeselect");
+                        register_setting("header_section", "wcip_theme_colour");
+                        register_setting("header_section", "wcip_invoice_logo");
+                        register_setting("header_section", "wcip_paper_size");
+                        register_setting("header_section", "wcip_click");
+                        register_setting("header_section", "wcip_show_vat");
+                        register_setting("header_section", "wcip_show_shipping_add");
+                        register_setting("header_section", "wcip_show_thumbnail");
+                        register_setting("header_section", "wcip_show_qty");
+                        register_setting("header_section", "wcip_show_discout");
+                        register_setting("header_section", "wcip_show_order_note");
+    			        register_setting("header_section", "wcip_thankyou_note");
     			    }
 
     			    function display_header_options_content(){
@@ -338,6 +592,8 @@ Text Domain: wcip
     			            <input type="text" name="header_logo" id="header_logo" value="<?php echo get_option('header_logo'); ?>" />
     			        <?php
     			    }
+
+
     			    function display_ads_form_element()
     			    {
     			        //id and name of form element should be same as the setting name.
@@ -346,8 +602,133 @@ Text Domain: wcip
     			        <?php
     			    }
 
-    			    //this action is executed after loads its core, after registering all actions, finds out what page to execute and before producing the actual output(before calling any action callback)
-    			    // add_action("admin_init", "display_options");
+                    // My Fields  $$$$$$$$$$$$$$$$$$$$$
+
+                    function wcip_themeselect_dropdown_form_element(){
+                        //id and name of form element should be same as the setting name.
+
+                        // $selected_option =   get_option('wcip_themeselect') ?
+
+                        // $selected_option =   (isset(get_option('wcip_themeselect')) ? get_option('wcip_themeselect') : false);
+                        $selected_option =   (!is_null(get_option('wcip_themeselect')) ? get_option('wcip_themeselect') : false);
+                        $theme = array('1'=> 'Basic' ,'2'=> 'Modern' ,'3'=> 'hmm' ,'4'=> 'Lates' ,'5'=> 'javmah' );
+
+                        if ($selected_option) {
+                           echo '<select name="wcip_themeselect">';
+                           foreach ($theme as $key => $value) {
+                                if ($key == $selected_option) {
+                                    echo "<option value='".$key."' selected >" . $value. " </option>" ;
+                                }else{
+                                 echo "<option value='".$key."'>" . $value. " </option>" ;
+                                }
+                           }
+                           echo '</select>';
+
+                        }else{
+                            echo '<select name="wcip_themeselect">';
+                            foreach ($theme as $key => $value) {
+                               echo "<option value='".$key."'>" . $value. " </option>" ;
+                            }
+                            echo '</select>';
+                        }  
+                    }
+
+                    function wcip_theme_colour_form_element()
+                    {
+                        //id and name of form element should be same as the setting name.
+                        ?>
+                            <input type="text" name="wcip_theme_colour" id="advertising_code" value="<?php echo get_option('advertising_code'); ?>" />
+                        <?php
+                    }
+
+                    # Logo Text fields 
+                    function wcip_invoice_logo_form_element(){
+                        //id and name of form element should be same as the setting name.
+                        ?>
+                            <input type="text" name="wcip_invoice_logo" id="advertising_code" value="<?php echo get_option('advertising_code'); ?>" />
+                        <?php
+                    }
+
+                    # PDF Paper Size
+                    function wcip_paper_size_form_element(){
+                        //id and name of form element should be same as the setting name.
+                        ?>
+                            <select name="wcip_paper_size">
+                              <option value="a4">A4</option>
+                              <option value="a5">A5</option>
+                            </select>
+                        <?php
+                    }
+
+                    function wcip_click_downloard_show_form_element(){
+                        //id and name of form element should be same as the setting name.
+                        ?>
+                            
+                            <select name="wcip_click">
+                              <option value="a4">Show in New Window </option>
+                              <option value="a5">Downloard</option>
+                            </select>
+                        <?php
+                    }
+
+                    function wcip_show_vat_form_element(){
+                        //id and name of form element should be same as the setting name.
+                        ?>
+                            <select>
+                              <option value="volvo">Volvo</option>
+                              <option value="saab">Saab</option>
+                              <option value="mercedes">Mercedes</option>
+                              <option value="audi">Audi</option>
+                            </select>
+                        <?php
+                    }
+
+                    function wcip_show_shipping_address_form_element(){
+                        //id and name of form element should be same as the setting name.
+                        ?>
+                            
+                            <input type="checkbox" name="vehicle" value="Bike">
+                        <?php
+                    }
+
+
+                    function wcip_show_thumbnail_form_element(){
+                        //id and name of form element should be same as the setting name.
+                        ?>
+                            <input type="checkbox" name="vehicle" value="Bike"> 
+                        <?php
+                    }
+
+                    function wcip_show_qty_form_element(){
+                        //id and name of form element should be same as the setting name.
+                        ?>
+                            <input type="checkbox" name="vehicle" value="Bike">
+                        <?php
+                    }
+
+                    function wcip_show_discout_form_element(){
+                        //id and name of form element should be same as the setting name.
+                        ?>
+                           <input type="checkbox" name="vehicle" value="Bike">
+                        <?php
+                    }
+
+                   function wcip_show_order_note_form_element(){
+                       //id and name of form element should be same as the setting name.
+                       ?>
+                          <input type="checkbox" name="vehicle" value="Bike">
+                       <?php
+                   }
+
+                   function wcip_thankyou_note_form_element(){
+                       //id and name of form element should be same as the setting name.
+                       ?>
+                          <input type="text" name="wcip_thankyou_note" value="THANK YOU FOR YOUR BUSINESS">
+                       <?php
+                   }
+
+
+    			   
     			
 
     		}
