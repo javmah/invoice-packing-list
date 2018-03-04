@@ -12,9 +12,39 @@ use Dompdf\Dompdf;
 $dompdf = new Dompdf();
 
 // Woocommerce Query Starts 
+// ########################
+
+	if (is_user_logged_in()) {
+		// echo " Hmm you are Logged in : Good Job <br>";
+	}
+	// 
+	$status = (isset($_GET['status']) ? $_GET['status'] : false); // status
+	$id =  (isset($_GET['id']) ? $_GET['id'] : false); // id
+	$order = wc_get_order( $id  );
+	$currency_symbol = get_woocommerce_currency_symbol( $order->currency );
+	// help Text :: https://stackoverflow.com/questions/25528454/getting-country-name-from-country-code-in-woocommerce/25533953
+	$country_name = WC()->countries->countries[ $order->billing_country];
+
+	// echo "<pre>";
+	// print_r($order) ; 
+	// echo "</pre>";
+	// echo "<hr>";
+	// echo $order->billing_country ;
+	// echo WC()->countries->countries[ $order->billing_country]; 
+	// echo "<br>";
+	// echo $woocommerce->customer->get_shipping_country() ;
+
+	
+// ######################
 // Woocommerce Query Ends 
 
-$html = '
+$html = '<html>
+		<meta http-equiv="Content-Type" content="text/html" charset=UTF-8" />
+		<head>
+		  <title> This is a Test  </title>
+		</head>
+
+		<body>
 		<style>
 		#customers {
 		    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -48,7 +78,7 @@ $html = '
 		}
 
 		#unit_price{
-			width:150px; 
+			width:130px; 
 		}
 
 		#total{
@@ -65,10 +95,15 @@ $html = '
 		$header = ' ';
 
 		$table = '  
+			Hello : <p style="font-family: firefly, DejaVu Sans, sans-serif;">&#8377;</p>
+			Hello :<p style="font-family: firefly, DejaVu Sans, sans-serif;">৳</p>
 			<table style="width:100%">
 			  <tr>
 			    <td style="width:65%"> 
-			    	<p><img src="http://via.placeholder.com/350x150"></p> 
+			    	<p>
+			    		<img src="http://via.placeholder.com/150x150">
+			    		<img src="http://api.qrserver.com/v1/create-qr-code/?color=000000&amp;bgcolor=FFFFFF&amp;data=http%3A%2F%2Flocalhost%2Fcomponentsource%2Fmy-account%2F&amp;qzone=1&amp;margin=0&amp;size=150x150&amp;ecc=L" alt="qr code" />
+			    	</p> 
 			    </td>
 			    <td style="width:35%">
 			    	<h2 style="color:#999999; "> INVOICE </h2>
@@ -96,39 +131,41 @@ $html = '
 
 			  <tr>
 
-			  	<td>TTC Company</td>
-			  	<td> TTC Bagabond </td>
-			    <td  > Invoice Number: <i> <b> 420 </b> </i> </td>
+			  	<td>' . $order->billing_company 		.'</td>
+			  	<td>' . $order->shipping_company 		.'</td>
+			    <td  > Invoice Number: <i> <b> 1++ </b> </i> </td>
 			  </tr>
 
 			  <tr>
-			  	<td>Kristina R Maxwell</td>
-			  	<td> Edith J Conkling </td>
+			  	<td>'.$order->billing_first_name . " " .  $order->shipping_last_name .'</td>
+			  	<td> '.$order->shipping_first_name . " " .  $order->shipping_last_name .'</td>
 			  	<td> Invoice Date: <i>	November 21, 2017 </i> </td>
 			  </tr>
 
 			  <tr>
-			  	<td>2907 Caynor Circle</td>
-			  	<td> 46 Stratford Court </td>
-			    <td> Order Number: <i><b> 142 </b></i> </td>
+			  	<td>'. $order->billing_address_1 	. '</td>
+			  	<td> '. $order->shipping_address_1 	. ' </td>
+			    <td> Order Number: <i><b>'. $order->id .'</b></i> </td>
 			  </tr>
 
 			  <tr>
-			  	<td>Branchburg</td>
-			  	<td> Raleigh </td>
-			    <td> Order Date: <i>	November 08, 2017 </i> </td>
+			  	<td>'. $order->billing_address_2 	. '</td>
+			  	<td> '. $order->shipping_address_2 	. ' </td>
+			    <td> Order Date: <i>	'. $order->order_date .' </i> </td>
 			  </tr>
 
 			  <tr>
-			  	<td>New Jersey 08817 </td>
-			  	<td> North Carolina 27601 </td>
-			    <td> Payment Method: <i> Check payments </i> </td>
+			  	<td>'. $order->billing_city . $order->billing_postcode	.'</td>
+			  	<td>'. $order->shipping_city . $order->shipping_postcode	.'</td>
+			    <td> Payment Method: <i> '. $order->payment_method_title .' </i> </td>
 			  </tr>
 			  
 			</table>
 			<br>
 			<br>
 	';
+
+
 		
 	$table2 ='<table id="customers">
 		  <tr>
@@ -137,71 +174,9 @@ $html = '
 		    <th id="qty" >Qty</th>
 		    <th id="unit_price">Unit Price</th>
 		    <th id="total">Total</th>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
-		  	<td>1</td>
-		  	<td> Apple </td>
-		    <td> 2 </td>
-		    <td>80</td>
-		    <td> 160 </td>
-		  </tr>
-		  <tr>
+		  </tr>';
+
+	$table2_aa .='<tr>
 		  	<td>1</td>
 		  	<td> Apple </td>
 		    <td> 2 </td>
@@ -209,54 +184,87 @@ $html = '
 		    <td> 160 </td>
 		  </tr>';
 
-	$table2 .='
-		<tr>
-			<td colspan="2" > </td>
-			<td colspan="2" id="subtotal_col"  > Sub total </td>
-		  	<td> 160 </td>
-		</tr>
-		<tr>
-			<td colspan="2" > </td>
-			<td colspan="2" id="subtotal_col" > Shipping </td>
-		  	<td> 160 </td>
-		</tr>
-		<tr>
-			<td colspan="2" > </td>
-			<td colspan="2" id="subtotal_col"  > Total Tax </td>
-		  	<td> 160 </td>
-		</tr>
+		$i = 1 ;
+		foreach($order->get_items() as $item_id => $item_values){
+		    // Getting the product ID
+		    
+		    $product_id = $item_values['product_id'];
+		    $product_name = $item_values['name'];
+		    $product_quantity = $item_values['quantity'];
+		    $product_subtotal_price = $item_values['subtotal'];
+		    $product_total_price = $item_values['total'];
+		    // ..../...
+		    
+			$table2 .="<tr>
+		        <td>{$i}</td>
+		        <td>{$product_name}</td>
+		        <td>{$product_quantity}</td>
 
-		<tr>
-			<td colspan="2" > </td>
-			<td colspan="2" id="subtotal_col"  > discount total </td>
-		  	<td> 160 </td>
-		</tr>
+		        <td>";
+		        	
+		        		// echo $product_subtotal_price / $product_quantity  ;
+		        		if($product_subtotal_price == $product_total_price){
+		        			$table2 .= "{$currency_symbol} ". $product_subtotal_price / $product_quantity  ;
+		        		}else{
+		        			$table2 .=  " {$currency_symbol}  <strike>". $product_subtotal_price / $product_quantity . "</strike> " . $product_total_price / $product_quantity   ;
+		        		}
 
-		<tr>
-			<td colspan="2"> </td>
-			<td colspan="2" id="subtotal_col"  > Invoice total </td>
-		  	<td> 160 </td>
-		</tr>
-	';
+
+		         	
+			$table2 .= "</td>
+
+		        <td>{$currency_symbol}  {$product_total_price} </td>
+		      </tr>";
+		      
+		    
+
+
+		    
+		    $i++ ;
+		}
+
+	$table2 .="
+			<tr>
+				<td colspan='2' > </td>
+				<td colspan='2' id='subtotal_col' > Shipping </td>
+			  	<td>{$currency_symbol}  {$order->shipping_total} </td>
+			</tr>
+			<tr>
+				<td colspan='2' > </td>
+				<td colspan='2' id='subtotal_col'  > Total Tax </td>
+			  	<td>{$currency_symbol}  {$order->total_tax}  </td>
+			</tr>
+			<tr>
+				<td colspan='2' > </td>
+				<td colspan='2' id='subtotal_col'  > discount total </td>
+			  	<td>{$currency_symbol} {$order->discount_total}</td>
+			</tr>
+			<tr>
+				<td colspan='2'> </td>
+				<td colspan='2' id='subtotal_col'  > Invoice total </td>
+			  	<td>{$currency_symbol}  {$order->total}  </td>
+			</tr>
+		";
+
 
 
 	$table2 .='</table>';
 
-	$order_note = '
+	$order_note = "
 		<br>
-		<table id="customers">
+		<table id='customers'>
 		  <tr>
 		    <th> Order Note : </th>
 		  </tr>
 		  <tr>
 		    <td>
-		    	<p style ="padding-left: 10px ; padding-right:10px" >
-		    		it is my first order but shipping charge applied on bill. please deliver 2 different color bread board if possible.
+		    	<p style ='padding-left: 10px ; padding-right:10px' >
+		    		{$order->customer_note} 
 		   		</p>
 		    </td>
 		  </tr>
 		</table>
-	';
+	";
 
 	$footer_note = "<p style='text-align: center;color:#4c4c4c ;  ' > 
 		Make all cheacks payable  to City Corp
@@ -264,16 +272,27 @@ $html = '
 	<h3 style='text-align: center;color:#999999 ; ' > THANK YOU FOR YOUR BUSINESS  </h3>
 	" ;
 
+	$page_end = "</body>";
 
+// print_r($table.$html.$table1.$table2 .$order_note. $footer_note) ;
+
+	// For Spacial Caharecters 
+	// mb_internal_encoding('UTF-8');
+	// def("DOMPDF_UNICODE_ENABLED", true);
 
 // $dompdf->loadHtml('hello world');
-$dompdf->loadHtml($table.$html.$table1.$table2 .$order_note. $footer_note);
+// $dompdf->loadHtml($table.$html.$table1.$table2 .$order_note. $footer_note);
+ $dompdf->loadHtml(utf8_decode($table.$html.$table1.$table2 .$order_note. $footer_note . $page_end));
+//$dompdf->loadHtml($table.$html.$table1.$table2 .$order_note. $footer_note, 'UTF-8');
 
-// Enable Image  Bisoncode
+
+
+// For remote Image Link 
 $dompdf->set_option('isRemoteEnabled', TRUE);
 
 // (Optional) Setup the paper size and orientation
-$dompdf->setPaper('A4', 'landscape');
+// $dompdf->setPaper('A4', 'landscape');
+$dompdf->setPaper('A4', 'portrait');
 
 // Render the HTML as PDF
 $dompdf->render();

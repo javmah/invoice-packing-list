@@ -122,7 +122,22 @@ Text Domain: wcip
                                 'id'       => 'section_title'
                             ),
 
-                            #Select theme dd
+                            # invoice_output_process
+
+                            'invoice_output_process' => array(
+                                'name'    => __( 'Invoice output Process ', 'woocommerce-invoice' ),
+                                'label'   => __( 'A Dropdown', 'wedevs' ),
+                                'desc'    => __( 'Dropdown description', 'wedevs' ),
+                                'type'    => 'radio',
+                                'id'      =>'invoice_output_process' ,
+                                'default' => 'default',
+                                'options' => array(
+                                    'default' => 'Default',
+                                    'pdf'  => 'PDF',
+                                )
+                            ),
+
+                            #Select theme 
                             'select_theme ' => array(
                                 'name'    => __( 'select Theme ', 'woocommerce-invoice' ),
                                 'label'   => __( 'A Dropdown', 'wedevs' ),
@@ -135,6 +150,42 @@ Text Domain: wcip
                                     'modern'  => 'modern'
                                 )
                             ),
+
+                            #Shop Name  
+                            'shop_name' => array(
+                                'name' => __( 'Shop Name ', 'woocommerce-settings-tab-demo' ),
+                                'type' => 'text',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'shop_name'
+                            ),
+
+                            #shop Address
+                            'shop_address' => array(
+                                'name' => __( 'Shop Address ', 'woocommerce-invoice' ),
+                                'type' => 'textarea',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'shop_address'
+                            ),
+
+                            # Select Date Formet 
+
+                            'invoice_time_format' => array(
+                                'name'    => __( 'Time format', 'woocommerce-invoice' ),
+                                'label'   => __( 'A Dropdown', 'wedevs' ),
+                                'desc'    => __( 'Dropdown description', 'wedevs' ),
+                                'type'    => 'radio',
+                                'id'      =>'invoice_time_format' ,
+                                'default' => 'no',
+                                'options' => array(
+                                    'default' => 'March 10, 2018',
+                                    'hh'  => '02-03-2018',
+                                    'modern'  => 'dd-mm-yy'
+                                )
+                            ),
+
+
                             # default Color
                             'invoice_prime_color ' => array(
                                  'name'    => __( 'Invoice Prime Color', 'woocommerce-invoice' ),
@@ -145,6 +196,7 @@ Text Domain: wcip
                                  'id'      =>'invoice_prime_color' ,
                                  'default' => '#ffa'
                             ),
+
                             # Logo URL 
                             'logo_url' => array(
                                 'name' => __( ' Invoice Logo Url', 'woocommerce-settings-tab-demo' ),
@@ -153,6 +205,8 @@ Text Domain: wcip
                                 'desc_tip' => 'Hmm is Working',
                                 'id'   => 'logo_url'
                             ),
+
+
                             # PDF Page SIze 
                             'pdf_page_size ' => array(
                                 'name'    => __( 'Invoice PDF Page Size', 'woocommerce-invoice' ),
@@ -187,6 +241,34 @@ Text Domain: wcip
                                 'desc_tip' => 'Hmm is Working',
                                 'id'   => 'show_shipping_address'
                             ),
+
+                            # Show Phone Number
+                            'show_phone_number' => array(
+                                'name' => __( ' Show Phone Number ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_phone_number'
+                            ),
+
+                            # Show Email address
+                            'show_email_address' => array(
+                                'name' => __( ' Show Email Address', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_email_address'
+                            ),
+
+                            # Show invoice date
+                            'show_invoice_date' => array(
+                                'name' => __( ' Show Invoice Date', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_invoice_date'
+                            ),
+
                             # Show product thumnail on Invoice 
                             'show_product_thumbnail' => array(
                                 'name' => __( ' Show Product thumbnail ', 'woocommerce-invoice' ),
@@ -236,6 +318,15 @@ Text Domain: wcip
                                 'id'   => 'invoice_footer_not_1'
                             ),
 
+                            #thankyou Note 
+                            'thankyou_note' => array(
+                                'name' => __( 'Thankyou Note  ', 'woocommerce-invoice' ),
+                                'type' => 'textarea',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'thankyou_note'
+                            ),
+
 
                             'section_end' => array(
                                  'type' => 'sectionend',
@@ -258,6 +349,19 @@ Text Domain: wcip
                                 'id'       => 'section_title'
                             ),
 
+                            'invoice_output_process' => array(
+                                'name'    => __( 'Time format', 'woocommerce-invoice' ),
+                                'label'   => __( 'A Dropdown', 'wedevs' ),
+                                'desc'    => __( 'Dropdown description', 'wedevs' ),
+                                'type'    => 'radio',
+                                'id'      =>'invoice_output_process' ,
+                                'default' => 'no',
+                                'options' => array(
+                                    'default' => 'Default',
+                                    'pdf'  => 'PDF',
+                                )
+                            ),
+
                             #Select theme dd
                             'select_theme ' => array(
                                 'name'    => __( 'select Theme ', 'woocommerce-invoice' ),
@@ -271,6 +375,55 @@ Text Domain: wcip
                                     'modern'  => 'modern'
                                 )
                             ),
+
+                            #Select theme dd
+                            'select_theme ' => array(
+                                'name'    => __( 'select Theme ', 'woocommerce-invoice' ),
+                                'label'   => __( 'A Dropdown', 'wedevs' ),
+                                'desc'    => __( 'Dropdown description', 'wedevs' ),
+                                'type'    => 'select',
+                                'id'      =>'select_theme' ,
+                                'default' => 'no',
+                                'options' => array(
+                                    'default' => 'default',
+                                    'modern'  => 'modern'
+                                )
+                            ),
+
+                            #Shop Name  
+                            'shop_name' => array(
+                                'name' => __( 'Shop Name ', 'woocommerce-settings-tab-demo' ),
+                                'type' => 'text',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'shop_name'
+                            ),
+
+                            #shop Address
+                            'shop_address' => array(
+                                'name' => __( 'Shop Address ', 'woocommerce-invoice' ),
+                                'type' => 'textarea',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'shop_address'
+                            ),
+
+                            # Select Date Formet 
+
+                            'invoice_time_format' => array(
+                                'name'    => __( 'Time format', 'woocommerce-invoice' ),
+                                'label'   => __( 'A Dropdown', 'wedevs' ),
+                                'desc'    => __( 'Dropdown description', 'wedevs' ),
+                                'type'    => 'radio',
+                                'id'      =>'invoice_time_format' ,
+                                'default' => 'no',
+                                'options' => array(
+                                    'default' => 'March 10, 2018',
+                                    'hh'  => '02-03-2018',
+                                    'modern'  => 'dd-mm-yy'
+                                )
+                            ),
+
                             # default Color
                             'invoice_prime_color ' => array(
                                  'name'    => __( 'Invoice Prime Color', 'woocommerce-invoice' ),
@@ -323,6 +476,36 @@ Text Domain: wcip
                                 'desc_tip' => 'Hmm is Working',
                                 'id'   => 'show_shipping_address'
                             ),
+
+                            # Show Phone Number
+                            'show_phone_number' => array(
+                                'name' => __( ' Show Phone Number ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_phone_number'
+                            ),
+
+                            # Show Email address
+                            'show_email_address' => array(
+                                'name' => __( ' Show Email Address', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_email_address'
+                            ),
+
+
+                            # Show invoice date
+                            'show_invoice_date' => array(
+                                'name' => __( ' Show Invoice Date', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'show_invoice_date'
+                            ),
+
+
                             # Show product thumnail on Invoice 
                             'show_product_thumbnail' => array(
                                 'name' => __( ' Show Product thumbnail ', 'woocommerce-invoice' ),
@@ -372,6 +555,15 @@ Text Domain: wcip
                                 'id'   => 'invoice_footer_not_1'
                             ),
 
+                            #thankyou Note 
+                            'thankyou_note' => array(
+                                'name' => __( 'Thankyou Note ', 'woocommerce-invoice' ),
+                                'type' => 'textarea',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'thankyou_note'
+                            ),
+
 
                             'section_end' => array(
                                  'type' => 'sectionend',
@@ -395,6 +587,8 @@ Text Domain: wcip
                             'id'       => 'section_title'
                             ),
 
+
+
                             # select Pakingslip Template 
 
                             'paking_list_theme' => array(
@@ -411,13 +605,42 @@ Text Domain: wcip
                             ),
 
                             # Show Shipping Address 
+                            'show_billing_address_in_paking_list' => array(
+                                'name' => __( ' Show Billing Address in Paking list ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'billing_address_in_paking_list'
+                            ),
+
+                            # Show Shipping Address 
                             'show_shipping_address_in_paking_list' => array(
                                 'name' => __( ' Show Shipping Address ', 'woocommerce-invoice' ),
                                 'type' => 'checkbox',
                                 'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
                                 'desc_tip' => 'Hmm is Working',
-                                'id'   => 'show_shipping_address_in_paking_list'
+                                'id'   => 'shipping_address_in_paking_list'
                             ),
+
+                            # Show Shipping Address 
+                            'show_thumbnail_in_paking_list' => array(
+                                'name' => __( ' Show Shipping Address ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'thumbnail_in_paking_list'
+                            ),
+
+                            # Show Shipping Address 
+                            'show_order_note_in_paking_list' => array(
+                                'name' => __( ' Show Shipping Address ', 'woocommerce-invoice' ),
+                                'type' => 'checkbox',
+                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                'desc_tip' => 'Hmm is Working',
+                                'id'   => 'order_note_in_paking_list'
+                            ),
+
+
 
                             #Ends
                             'paking_slip_section_end' => array(
@@ -429,50 +652,76 @@ Text Domain: wcip
                 }
 
                 public function paking_list_update_settings($value=''){
-                    woocommerce_update_options(
-                        array(
-                            # Starts
-                            'paking_slip_section_title' => array(
-                            'name'     => __( 'Section Title', 'woocommerce-invoice' ),
-                            'type'     => 'title',
-                            'desc'     => '',
-                                
-                            'id'       => 'section_title'
-                            ),
+                     woocommerce_admin_fields(
+                         array(
+                             # Starts
+                             'paking_slip_section_title' => array(
+                             'name'     => __( 'Section Title', 'woocommerce-invoice' ),
+                             'type'     => 'title',
+                             'desc'     => '',
+                                 
+                             'id'       => 'section_title'
+                             ),
 
-                            # select Pakingslip Template 
+                             # select Pakingslip Template 
 
-                            'paking_list_theme' => array(
-                                'name'    => __( 'select Paking List Theme ', 'woocommerce-invoice' ),
-                                'label'   => __( 'A Dropdown', 'wedevs' ),
-                                'desc'    => __( 'Dropdown description', 'wedevs' ),
-                                'type'    => 'select',
-                                'id'      =>'paking_list_theme' ,
-                                'default' => 'no',
-                                'options' => array(
-                                    'default_list' => 'default Paking List ',
-                                    'modern_list'  => 'modern paking List'
-                                )
-                            ),
+                             'paking_list_theme' => array(
+                                 'name'    => __( 'select Paking List Theme ', 'woocommerce-invoice' ),
+                                 'label'   => __( 'A Dropdown', 'wedevs' ),
+                                 'desc'    => __( 'Dropdown description', 'wedevs' ),
+                                 'type'    => 'select',
+                                 'id'      =>'paking_list_theme' ,
+                                 'default' => 'no',
+                                 'options' => array(
+                                     'default_list' => 'default Paking List ',
+                                     'modern_list'  => 'modern paking List'
+                                 )
+                             ),
+
+                             # Show Shipping Address 
+                             'show_billing_address_in_paking_list' => array(
+                                 'name' => __( 'Show Billing Address in Paking List', 'woocommerce-invoice' ),
+                                 'type' => 'checkbox',
+                                 'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                 'desc_tip' => 'Hmm is Working',
+                                 'id'   => 'billing_address_in_paking_list'
+                             ),
+
+                             # Show Shipping Address 
+                             'show_shipping_address_in_paking_list' => array(
+                                 'name' => __( ' Show Shipping Address ', 'woocommerce-invoice' ),
+                                 'type' => 'checkbox',
+                                 'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                 'desc_tip' => 'Hmm is Working',
+                                 'id'   => 'shipping_address_in_paking_list'
+                             ),
+
+                             # Show Shipping Address 
+                             'show_thumbnail_in_paking_list' => array(
+                                 'name' => __( ' Show Shipping Address ', 'woocommerce-invoice' ),
+                                 'type' => 'checkbox',
+                                 'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                 'desc_tip' => 'Hmm is Working',
+                                 'id'   => 'thumbnail_in_paking_list'
+                             ),
+
+                             # Show Shipping Address 
+                             'show_order_note_in_paking_list' => array(
+                                 'name' => __( ' Show Shipping Address ', 'woocommerce-invoice' ),
+                                 'type' => 'checkbox',
+                                 'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
+                                 'desc_tip' => 'Hmm is Working',
+                                 'id'   => 'order_note_in_paking_list'
+                             ),
 
 
 
-                            # Show Shipping Address 
-                            'show_shipping_address_in_paking_list' => array(
-                                'name' => __( ' Show Shipping Address ', 'woocommerce-invoice' ),
-                                'type' => 'checkbox',
-                                'desc' => __( 'This is some helper text', 'woocommerce-invoice' ),
-                                'desc_tip' => 'Hmm is Working',
-                                'id'   => 'show_shipping_address_in_paking_list'
-                            ),
-
-                            #Ends
-                            'paking_slip_section_end' => array(
-                                 'type' => 'sectionend',
-                                 'id' => 'section_end'
-                            ) 
-                        )
-
+                             #Ends
+                             'paking_slip_section_end' => array(
+                                  'type' => 'sectionend',
+                                  'id' => 'section_end'
+                             ) 
+                         )
                     );
                 }
 
@@ -484,7 +733,7 @@ Text Domain: wcip
     			
     			# Adding External PDF Layout Link Starts
     			public function viewinps($value=''){
-    				require_once( plugin_dir_path( __FILE__ ) . '/invoice-1.php');	
+    				require_once( plugin_dir_path( __FILE__ ) . '/invoice-8.php');	
     				
     			}
     			# Adding External PDF Layout Link Ends
