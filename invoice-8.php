@@ -1,31 +1,90 @@
-<?php
-// header("Content-type: application/pdf");
-// $headers['Content-Type'] = 'application/pdf; charset=utf-8';
-// header("Content-Disposition: inline; filename=invoice.pdf");
-// @readfile('http://localhost/componentsource/wp-content/uploads/2018/03/invoice.pdf');
-// exit(); 
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#customers {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
 
-// header('Content-Disposition: attachment; filename="invoice.pdf"');
-// header('Content-Type: application/force-download');
-// header('Content-Type: application/octet-stream');
-// header('Content-Type: application/download');
-// header('Content-Description: File Transfer');
-// header('Content-Length: ' . filesize('http://localhost/componentsource/wp-content/uploads/2018/03/invoice.pdf'));
-// echo file_get_contents('http://localhost/componentsource/wp-content/uploads/2018/03/invoice.pdf');
+#customers td, #customers th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
 
-//read and display the cached file
+#customers tr:nth-child(even){background-color: #f2f2f2;}
 
-// header('Content-type: application/pdf');
-// header('Content-Disposition: inline; filename="invoice.pdf"');
-// header('Content-Transfer-Encoding: binary');
-// header('Content-Length: ' . filesize('http://localhost/componentsource/wp-content/uploads/2018/03/invoice.pdf'));
-// header('Accept-Ranges: bytes');
-// readfile('http://localhost/componentsource/wp-content/uploads/2018/03/invoice.pdf');
+#customers tr:hover {background-color: #ddd;}
 
-header('Content-type: application/pdf');
-header('Content-Disposition: inline; filename="invoice.pdf" ');
-readfile('http://localhost/componentsource/wp-content/uploads/2018/03/invoice.pdf');
+#customers th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+</style>
+</head>
+<body>
 
+<table id="customers">
+  <tr>
+    <th>Company</th>
+    <th>Contact</th>
+    <th>Country</th>
+  </tr>
+  <tr>
+    <td>Alfreds Futterkiste</td>
+    <td>Maria Anders</td>
+    <td>Germany</td>
+  </tr>
+  <tr>
+    <td>Berglunds snabbköp</td>
+    <td>Christina Berglund</td>
+    <td>Sweden</td>
+  </tr>
+  <tr>
+    <td>Centro comercial Moctezuma</td>
+    <td>Francisco Chang</td>
+    <td>Mexico</td>
+  </tr>
+  <tr>
+    <td>Ernst Handel</td>
+    <td>Roland Mendel</td>
+    <td>Austria</td>
+  </tr>
+  <tr>
+    <td>Island Trading</td>
+    <td>Helen Bennett</td>
+    <td>UK</td>
+  </tr>
+  <tr>
+    <td>Königlich Essen</td>
+    <td>Philip Cramer</td>
+    <td>Germany</td>
+  </tr>
+  <tr>
+    <td>Laughing Bacchus Winecellars</td>
+    <td>Yoshi Tannamuri</td>
+    <td>Canada</td>
+  </tr>
+  <tr>
+    <td>Magazzini Alimentari Riuniti</td>
+    <td>Giovanni Rovelli</td>
+    <td>Italy</td>
+  </tr>
+  <tr>
+    <td>North/South</td>
+    <td>Simon Crowther</td>
+    <td>UK</td>
+  </tr>
+  <tr>
+    <td>Paris spécialités</td>
+    <td>Marie Bertrand</td>
+    <td>France</td>
+  </tr>
+</table>
 
-
-?>
+</body>
+</html>

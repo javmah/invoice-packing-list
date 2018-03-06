@@ -57,9 +57,7 @@ Text Domain: wcip
     		
     		class Wcip {
 
-    			
-
-    			
+    		
     			public function __construct(){
     				
     				# INIT woocommerce action  Hook 
@@ -88,19 +86,44 @@ Text Domain: wcip
 
                     #################################### Adding Javascript On Footer ####################
                     add_action('admin_footer', array($this , 'my_admin_footer_function'), 100);
+
+                    #####################################  AJAX STARTS ####################################
+                    add_action(
+                           'wp_ajax_get_current_user_info',
+                           array( $this, 'get_current_user_info' )
+                       );
+                    
+                       add_action(
+                           'wp_ajax_nopriv_get_current_user_info',
+                           array( $this, 'get_current_user_info' )
+                       );
     			}
+
+                // ############################# AJAX STARTS #######################
+                    public function get_current_user_info() {
+                
+                       $user_id = get_current_user_id();
+                
+                       echo "user ID Is :".$user_id  ;
+                    }
+                // ############################# AJAX ENDS #######################
 
     			// ########################## Another Way ###########################
 
     			public function Addfirst($parm){
     				
-    				 echo "<a class='button wc-action-button wc-action-button-view parcial view parcial' onclick='sayHello()' target='_blank' 
-    				  href='". wp_nonce_url( admin_url( "admin-post.php?action=viewinps&status=invoice&id={$parm->id}")) ."'>Δ
-    				  	</a>";
+    				//  echo "<a class='button wc-action-button wc-action-button-view parcial view parcial' onclick='sayHello()' target='_blank' 
+    				//   href='". wp_nonce_url( admin_url( "admin-post.php?action=viewinps&status=invoice&id={$parm->id}")) ."'>Δ
+    				//   	</a>";
 
-    				echo "<a class='button wc-action-button wc-action-button-view dom view dom' onclick='sayHello()'  target='_blank' 
-    				 href='". wp_nonce_url( admin_url( "admin-post.php?action=viewinps&status=packinglist&id={$parm->id}")) ."'> #
-    				 	</a>";
+    				// echo "<a class='button wc-action-button wc-action-button-view dom view dom' onclick='sayHello()'  target='_blank' 
+    				//  href='". wp_nonce_url( admin_url( "admin-post.php?action=viewinps&status=packinglist&id={$parm->id}")) ."'> #
+    				//  	</a>";
+
+                    echo "<a class='button wc-action-button wc-action-button-view parcial view parcial' onclick='sayHello(".$parm->id.")' >Δ
+                        </a>";
+
+                    echo "<a class='button wc-action-button wc-action-button-view dom view dom' onclick='sayHello(".$parm->id.")'  > # </a>";
     			}
 
                 public static function add_settings_tab( $settings_tabs ) {
@@ -668,7 +691,7 @@ Text Domain: wcip
 
 
                 public function paking_list_update_settings($value=''){
-                     woocommerce_update_options(
+                    woocommerce_update_options(
                        array(
                            # Starts
                            'paking_slip_section_title' => array(
@@ -754,12 +777,327 @@ Text Domain: wcip
                 
                 function my_admin_footer_function() {
                    ?>
+                   
+                   <!-- Vue JS Starts  -->
+                   <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+                   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-                    <script>
-                        function sayHello() {
-                            alert('Hello Guys How are You Doing') ;
-                        }
+                   <dir id="testViw">
+                        <span style="float: right; padding-bottom: 50px;" >
+                            <p>{{ message }}</p>
+                            <?php echo '<button v-on:click="reverseMessage">Reverse Message</button>'; ?>
+                            <!-- <button v-on:click="reverseMessage">Reverse Message</button> -->
+                        </span>
+                      
+                   </dir>
+
+                  
+                    <div id="invoice"  >
+                           
+                                
+
+
+                               <table style="width:100%">
+                                 <tr>
+                                   <td style="width:65%"> 
+                                    <p>
+                                        <img src="http://via.placeholder.com/150x150">
+                                        <img src="http://api.qrserver.com/v1/create-qr-code/?color=000000&amp;bgcolor=FFFFFF&amp;data=http%3A%2F%2Flocalhost%2Fcomponentsource%2Fmy-account%2F&amp;qzone=1&amp;margin=0&amp;size=150x150&amp;ecc=L" alt="qr code" />
+                                    </p> 
+                                   </td>
+                                   <td style="width:35%">
+                                    <h2 style="color:#999999; "> INVOICE {{message}} </h2>
+                                    <p>  
+                                        <b>leetech</b><br>
+                                        124 / Kha , Majar co-opperativ Market
+                                        <br>
+                                        Dhaka – 1216 , 
+                                        Bangladesh
+                                        <br>
+                                        tel: +01775-787641  ,
+                                        email : leetech.info@gmail.com 
+                                    </p>
+                                   </td>
+                                 </tr>
+                               </table>
+
+                                <table id="customers">
+                                          <tr>
+                                            <th style="width:33%" > Billing Address </th>
+                                            <th style="width:33%" > Shipping Address  </th>
+                                            <th style="width:33%" > Order details </th>
+                                          </tr>
+
+                                          <tr>
+
+                                            <td><?php $order->billing_company         ?></td>
+                                            <td><?php $order->shipping_company        ?></td>
+                                            <td> Invoice Number: <i> <b> 1++ </b> </i> </td>
+                                          </tr>
+
+                                          <tr>
+                                            <td><?php $order->billing_first_name . " " .  $order->shipping_last_name ?> </td>
+                                            <td><?php $order->shipping_first_name . " " .  $order->shipping_last_name ?></td>
+                                            <td> Invoice Date: <i>  November 21, 2017 </i> </td>
+                                          </tr>
+
+                                          <tr>
+                                            <td><?php $order->billing_address_1    ?></td>
+                                            <td><?php $order->shipping_address_1  ?></td>
+                                            <td> Order Number: <i><b><?php $order->id ?></b></i> </td>
+                                          </tr>
+
+                                          <tr>
+                                            <td><?php $order->billing_address_2    ?></td>
+                                            <td><?php $order->shipping_address_2   ?> </td>
+                                            <td> Order Date: <i>    <?php $order->order_date ?> </i> </td>
+                                          </tr>
+
+                                          <tr>
+                                            <td><?php $order->billing_city . $order->billing_postcode  ?></td>
+                                            <td><?php $order->shipping_city . $order->shipping_postcode    ?></td>
+                                            <td> Payment Method: <i> <?php $order->payment_method_title ?> </i> </td>
+                                          </tr>        
+                                </table>
+                                <br>
+                                <br>
+
+                                <table id="customers">
+                                    <tr>
+                                        <th id="number" > # </th>
+                                        <th>Product Name</th>
+                                        <th id="qty" >Qty</th>
+                                        <th id="unit_price">Unit Price</th>
+                                        <th id="total">Total</th>
+                                    </tr>
+
+                                    <tr>
+                                        <td>1</td>
+                                        <td> Apple </td>
+                                        <td> 2 </td>
+                                        <td>80</td>
+                                        <td> 160 </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>1</td>
+                                        <td> Apple </td>
+                                        <td> 2 </td>
+                                        <td>80</td>
+                                        <td> 160 </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>1</td>
+                                        <td> Apple </td>
+                                        <td> 2 </td>
+                                        <td>80</td>
+                                        <td> 160 </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan='2' > </td>
+                                        <td colspan='2' id='subtotal_col' > Shipping </td>
+                                            <td>{$currency_symbol}  {$order->shipping_total} </td>
+                                    </tr>
+                                  
+                                    <tr>
+                                        <td colspan='2' > </td>
+                                        <td colspan='2' id='subtotal_col'  > Total Tax </td>
+                                        <td>{$currency_symbol}  {$order->total_tax}  </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan='2' > </td>
+                                        <td colspan='2' id='subtotal_col'  > discount total </td>
+                                        <td>{$currency_symbol} {$order->discount_total}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan='2'> </td>
+                                        <td colspan='2' id='subtotal_col'  > Invoice total </td>
+                                        <td>{$currency_symbol}  {$order->total}  </td>
+                                    </tr>
+
+                                </table>
+                            
+
+                           
+
+                    </div>
+
+
+                   <script type="text/javascript">
+                       
+                       // var app5 = new Vue({
+                       //   el: '#invoice',
+                       //   data: {
+                       //     message: 'Hello Vue.js!'
+                       //   },
+                       //   methods: {
+                       //     reverseMessage: function () {
+                       //       this.message = this.message.split('').reverse().join('')
+                       //     }
+                       //   }
+                       // })
                     </script>
+
+                    <style type="text/css">
+
+                       @media print {
+                          /* #invoice{
+                             visibility: visible;
+                           }*/
+
+                           html, body {
+                              height: 99%;    
+                              margin: 0 !important ;
+                              padding:0 !important ;
+                              background:  white ;
+                           }
+
+                           /*Table Style start*/
+
+                           /*table {
+                               font-family: arial, sans-serif;
+                               border-collapse: collapse;
+                               width: 100%;
+                               margin-top: 15px ;
+                           }
+
+                           td, th {
+                               border: 1px solid #dddddd;
+                               text-align: left;
+                               padding: 8px;
+                           }
+
+                           tr:nth-child(even) {
+                               background-color: #dddddd;
+                           } */
+
+                           table{
+                               width: 100% ;
+                           }
+
+                           #customers td, #customers th {
+                               border: 1px solid #ddd;
+                               padding: 8px;
+                           }
+
+                           #customers tr:nth-child(even){background-color: #f2f2f2;}
+
+                           #customers tr:hover {background-color: #ddd;}
+
+                           #customers th {
+                               padding-top: 12px;
+                               padding-bottom: 12px;
+                               text-align: left;
+                               background-color: #4CAF50;
+                               color: white;
+                           }
+
+                           #number{
+                               width:40px; 
+                           }
+
+                           #qty{
+                               width:50px; 
+                           }
+
+                           #unit_price{
+                               width:130px; 
+                           }
+
+                           #total{
+                               width:130px;
+                           }
+
+                           /*Table Style Ends*/
+                       }
+
+
+                       #invoice{
+                           visibility: hidden;
+                           position: absolute;
+                           top: 0 ;
+                           left:0;
+                           right: 0 ;
+                           width: 100%;
+                       }
+
+                       
+                       
+                     
+
+                   </style>
+
+                   <script>
+                      function old_sayHello() {
+                          var printContents = document.getElementById('invoice').innerHTML;
+                          var originalContents = document.body.innerHTML;
+                          document.body.innerHTML = printContents;
+                          window.print();
+                          document.body.innerHTML = originalContents;
+                      }
+
+                      function hmm_sayHello() {
+                           var printContents = document.getElementById('invoice').innerHTML;
+                           var originalContents = document.body.innerHTML;
+                           document.body.innerHTML = printContents;
+
+                           window.print();
+
+                           document.body.innerHTML = originalContents;
+                      }
+
+                      function sayHello($id) {
+                           console.log($id) ;
+                           console.log(ajaxurl) ;
+
+
+                            var xhttp = new XMLHttpRequest();
+                                xhttp.onreadystatechange = function() {
+                                if (this.readyState == 4 && this.status == 200) {
+                                    // document.getElementById("demo").innerHTML = this.responseText;
+                                    console.log('Ajax Respons :' + this.responseText) ;
+
+                                }
+                            };
+
+
+                            xhttp.open("GET", ajaxurl , true);
+                            xhttp.send();
+
+                          //  var printContents = document.getElementById('invoice').innerHTML;
+                          //  var originalContents = document.body.innerHTML;
+
+                          //  document.getElementById("invoice").style.visibility = "visible";
+                          //  document.body.innerHTML =  printContents
+                          
+                          // window.print();
+                          // document.body.innerHTML = originalContents;
+                      }
+
+                      function x_sayHello($orderid) {
+                           
+                           alert($orderid) ;
+                          
+                      }
+
+                      var app5 = new Vue({
+                        el: '#invoice',
+                        data: {
+                          message: 'Hello Vue.js!'
+                        },
+                        methods: {
+                          reverseMessage: function () {
+                            this.message = this.message.split('').reverse().join('')
+                          },
+                          datatran:function($id){
+                            console.log($id );
+                          }
+                        }
+                      })
+                   </script>
 
                    <?php
                 }
