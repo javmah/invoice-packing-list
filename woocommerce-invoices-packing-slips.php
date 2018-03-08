@@ -138,11 +138,17 @@ Text Domain: wcip
                     $country_name = WC()->countries->countries[ $order->billing_country];
                     $dataarray = array(
 
-                                    'Order Number'   =>     $parm->id,
-                                    'Order Date'     =>     $order->order_date ,
-                                    'Payment Method' =>     $order->payment_method_title,
+
+                                    'order_number'   =>     $parm->id,
+                                    'order_date'     =>     $order->order_date ,
+                                    'payment_method' =>     $order->payment_method_title,
                                     'currency_symbol'=>     $currency_symbol,
                                     'country_name'   =>     $country_name,
+
+                                    'shipping_charge'=>     $order->shipping_total ,
+                                    'total_tax'      =>     $order->total_tax ,
+                                    'discount_total' =>     $order->discount_total ,
+                                    'invoice_total'  =>     $order->total ,
 
                                     'billing_company'   =>  $order->billing_company ,
                                     'billing_first_name'=>  $order->billing_first_name ,
@@ -913,63 +919,51 @@ Text Domain: wcip
                         <br>
                         <br>
 
-                        <table id="customers">
-                            <tr>
+                        <span id="referance"></span>
+
+                       <!--  <table id="customers">
+                            <tr id="divafter" >
                                 <th id="number" > # </th>
                                 <th>Product Name</th>
                                 <th id="qty" >Qty</th>
                                 <th id="unit_price">Unit Price</th>
                                 <th id="total">Total</th>
-                            </tr>
-
-                            <tr>
-                                <td>1</td>
-                                <td> Apple </td>
-                                <td> 2 </td>
-                                <td>80</td>
-                                <td> 160 </td>
-                            </tr>
-
-                            <tr>
-                                <td>1</td>
-                                <td> Apple </td>
-                                <td> 2 </td>
-                                <td>80</td>
-                                <td> 160 </td>
-                            </tr>
-
-                            <tr id="divafter" >
-                                <td>1</td>
-                                <td> Apple </td>
-                                <td> 2 </td>
-                                <td>80</td>
-                                <td> 160 </td>
-                            </tr>
+                            </tr> -->
 
                             
 
-                            <tr>
+                           <!--  <tr>
+                                <td>1</td>
+                                <td> Apple </td>
+                                <td> 2 </td>
+                                <td>80</td>
+                                <td> 160 </td>
+                            </tr> -->
+
+                            
+
+                            <!-- <tr>
                                 <td colspan='2' > </td>
                                 <td colspan='2' id='subtotal_col' > Shipping </td>
-                                    <td>{$currency_symbol}  {$order->shipping_total} </td>
+                                    <td id='shipping_total_amount'> </td>
                             </tr>
                           
                             <tr>
                                 <td colspan='2' > </td>
                                 <td colspan='2' id='subtotal_col'  > Total Tax </td>
-                                <td>{$currency_symbol}  {$order->total_tax}  </td>
+                                <td id='total_tax_amount'>   </td>
                             </tr>
 
                             <tr>
                                 <td colspan='2' > </td>
                                 <td colspan='2' id='subtotal_col'  > discount total </td>
-                                <td>{$currency_symbol} {$order->discount_total}</td>
+                                <td id='discount_total_amount'> </td>
                             </tr>
                             <tr>
                                 <td colspan='2'> </td>
                                 <td colspan='2' id='subtotal_col'  > Invoice total </td>
-                                <td>{$currency_symbol}  {$order->total}  </td>
-                            </tr>
+                                <td id='total_amount'>  </td>
+                            </tr> -->
 
                         </table>
 
@@ -1057,12 +1051,7 @@ Text Domain: wcip
                            }
                         </style>
 
-                        <!-- <script
-                          src="https://code.jquery.com/jquery-3.3.1.min.js"
-                          integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-                          crossorigin="anonymous"></script>
 
-                        <script> -->
                         <script type="text/javascript">
 
                             jQuery(document).ready(function(){
@@ -1077,33 +1066,76 @@ Text Domain: wcip
 
                                     info  = jQuery(this).data('order-id') ;
 
-                                    
+                                     $html_table1 = `<table id="customers" class="yep">
+                                                <tr id="divafter" >
+                                                    <th id="number" > # </th>
+                                                    <th>Product Name</th>
+                                                    <th id="qty" >Qty</th>
+                                                    <th id="unit_price">Unit Price</th>
+                                                    <th id="total">Total</th>
+                                                </tr>"`;
 
+                                    $( "#referance" ).append( $html_table1 );
+ 
+                                    // $.each( info.shopping_products , function(i, item) {
+                                    //     // console.log( info.shopping_products[i].product_id +" |" + info.shopping_products[i].name);
+                                    //     jQuery('#divafter').append('<tr> <td> '+i+' </td> <td> '+info.shopping_products[i].name+' </td> <td> '+info.shopping_products[i].quantity+' </td> <td>'+info.shopping_products[i].subtotal+'</td><td> '+info.shopping_products[i].total+' </td>  </tr>');
+                                    //     // console.log(i);
+                                    // })
+                                    priceandproduct ='' ;
                                     $.each( info.shopping_products , function(i, item) {
                                         // console.log( info.shopping_products[i].product_id +" |" + info.shopping_products[i].name);
-                                        // console.log( '----------------------------' );
-                                        // $('#divafter').after('<tr> <td> '+i+' </td> <td> '+info.shopping_products[i].name+' </td> <td> '+info.shopping_products[i].quantity+' </td> <td>'+info.shopping_products[i].subtotal+'</td><td> '+info.shopping_products[i].total+' </td>  </tr>');
-
-                                        jQuery('#divafter').append('<tr> <td> '+i+' </td> <td> '+info.shopping_products[i].name+' </td> <td> '+info.shopping_products[i].quantity+' </td> <td>'+info.shopping_products[i].subtotal+'</td><td> '+info.shopping_products[i].total+' </td>  </tr>');
-
-
-
+                                        priceandproduct +='<tr> <td> '+i+' </td> <td> '+info.shopping_products[i].name+' </td> <td> '+info.shopping_products[i].quantity+' </td> <td>'+info.shopping_products[i].subtotal+'</td><td> '+info.shopping_products[i].total+' </td>  </tr>';
                                         // console.log(i);
                                     })
 
 
+                                    // Html table Ends 
+
+                                    $html_table_end =`<tr>
+                                            <td colspan='2' > </td>
+                                            <td colspan='2' id='subtotal_col' > Shipping </td>
+                                                <td id='shipping_total_amount'> </td>
+                                        </tr>
+                                      
+                                        <tr>
+                                            <td colspan='2' > </td>
+                                            <td colspan='2' id='subtotal_col'  > Total Tax </td>
+                                            <td id='total_tax_amount'>   </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td colspan='2' > </td>
+                                            <td colspan='2' id='subtotal_col'  > discount total </td>
+                                            <td id='discount_total_amount'> </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan='2'> </td>
+                                            <td colspan='2' id='subtotal_col'  > Invoice total </td>
+                                            <td id='total_amount'>  </td>
+                                        </tr>
+
+                                    </table>`;
+
+                                    $( ".yep" ).append( priceandproduct+$html_table_end );
 
 
 
-                                    // console.log(ajaxurl);
 
 
-                                    // jQuery.post(ajaxurl, data, function(response) {
-                                    //     // alert('Got this from the server: ' + response);
-                                    //     $('#invoice_billing_address').html(' is This Working !!! Number :'+response);
-                                    // });
 
-                                    // $('#invoice_billing_address').html(' is This Working !!! Number :');
+
+                                    // $('#referance').after($html_table) ;
+
+                                    // Shipping
+                                    $( "#shipping_total_amount" ).html( info.currency_symbol+' '+  info.shipping_charge);
+                                    // Total Tax
+                                    $( "#total_tax_amount" ).html(  info.currency_symbol+' '+  info.total_tax);
+                                    // discount total
+                                    $( "#discount_total_amount" ).html( info.currency_symbol+' '+  info.discount_total);
+                                    // Invoice total
+                                    $( "#total_amount" ).html( info.currency_symbol+' '+ info.invoice_total);
+
 
                                     
                                     // Starts
@@ -1136,6 +1168,8 @@ Text Domain: wcip
                             //     window.print();
                             //     document.body.innerHTML = originalContents;
                             // }
+
+
                         </script>
 
 

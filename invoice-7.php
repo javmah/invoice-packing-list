@@ -269,7 +269,7 @@ $html = '
 	<h3 style='text-align: center;color:#999999 ; ' > THANK YOU FOR YOUR BUSINESS  </h3>
 	" ;
 
-	$page_end = "</body>";
+	$page_end = "</body></html>";
 
 // print_r($table.$html.$table1.$table2 .$order_note. $footer_note) ;
 
