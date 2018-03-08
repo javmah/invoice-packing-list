@@ -115,13 +115,13 @@ Text Domain: wcip
 
     			public function Addfirst($parm){
 
-                    //  echo "<a class='button wc-action-button wc-action-button-view parcial view parcial'  target='_blank' 
-                    //   href='". wp_nonce_url( admin_url( "admin-post.php?action=viewinps&status=invoice&id={$parm->id}")) ."'>Δ
-                    //      </a>";
+                     echo "<a class='button wc-action-button wc-action-button-view parcial view parcial'  target='_blank' 
+                      href='". wp_nonce_url( admin_url( "admin-post.php?action=viewinps&status=invoice&id={$parm->id}")) ."'>Δ
+                         </a>";
 
-                    // echo "<a class='button wc-action-button wc-action-button-view dom view dom'   target='_blank' 
-                    //  href='". wp_nonce_url( admin_url( "admin-post.php?action=viewinps&status=packinglist&id={$parm->id}")) ."'> #
-                    //      </a>";
+                    echo "<a class='button wc-action-button wc-action-button-view dom view dom'   target='_blank' 
+                     href='". wp_nonce_url( admin_url( "admin-post.php?action=viewinps&status=packinglist&id={$parm->id}")) ."'> #
+                         </a>";
     				
     				//  echo "<a class='button wc-action-button wc-action-button-view parcial view parcial' onclick='sayHello()' target='_blank' 
     				//   href='". wp_nonce_url( admin_url( "admin-post.php?action=viewinps&status=invoice&id={$parm->id}")) ."'>Δ
@@ -193,10 +193,10 @@ Text Domain: wcip
                     // Ends Query String 
 
 
-                    echo "<a  data-order-id='". json_encode($dataarray) ."' class='invoice_link button wc-action-button wc-action-button-view parcial view parcial'  >Δ
-                        </a>";
+                    // echo "<a  data-order-id='". json_encode($dataarray) ."' class='invoice_link button wc-action-button wc-action-button-view parcial view parcial'  >Δ
+                    //     </a>";
 
-                    echo "<a  data-order-id='".$parm->id."' class='invoice_link button wc-action-button wc-action-button-view dom view dom'   > # </a>";
+                    // echo "<a  data-order-id='".$parm->id."' class='invoice_link button wc-action-button wc-action-button-view dom view dom'   > # </a>";
     			}
 
                 public static function add_settings_tab( $settings_tabs ) {
@@ -840,7 +840,7 @@ Text Domain: wcip
     			
     			# Adding External PDF Layout Link Starts
     			public function viewinps($value=''){
-    				require_once( plugin_dir_path( __FILE__ ) . '/invoice-8.php');	
+    				require_once( plugin_dir_path( __FILE__ ) . '/hmm.php');	
     				
     			}
     			# Adding External PDF Layout Link Ends
