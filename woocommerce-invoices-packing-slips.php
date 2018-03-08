@@ -88,29 +88,40 @@ Text Domain: wcip
                     add_action('admin_footer', array($this , 'my_admin_footer_function'), 100);
 
                     #####################################  AJAX STARTS ####################################
-                    add_action(
-                           'wp_ajax_get_current_user_info',
-                           array( $this, 'get_current_user_info' )
-                       );
+                    add_action('wp_ajax_my_action',array( $this, 'my_action' ));
                     
-                       add_action(
-                           'wp_ajax_nopriv_get_current_user_info',
-                           array( $this, 'get_current_user_info' )
-                       );
+                    add_action('wp_ajax_nopriv_my_action', array( $this, 'my_action' ));
+
+                    // Adding Jquery to Plugin Starts 
+                    // add_action( 'wp_enqueue_scripts', array($this ,'jquery_add'));
+                    // Adding Jquery to Plugin Ends
     			}
 
+                function jquery_add() {
+                    wp_enqueue_script( 'jquery_in_plugin', plugins_url('/jquery-3.3.1.min.js', __FILE__) , array( 'jquery' ), '1.0.0', true );
+                }
+
                 // ############################# AJAX STARTS #######################
-                    public function get_current_user_info() {
+                    public function my_action() {
                 
                        $user_id = get_current_user_id();
                 
                        echo "user ID Is :".$user_id  ;
+                       wp_die(); // this is required to terminate immediately and return a proper response
                     }
                 // ############################# AJAX ENDS #######################
 
     			// ########################## Another Way ###########################
 
     			public function Addfirst($parm){
+
+                    //  echo "<a class='button wc-action-button wc-action-button-view parcial view parcial'  target='_blank' 
+                    //   href='". wp_nonce_url( admin_url( "admin-post.php?action=viewinps&status=invoice&id={$parm->id}")) ."'>Δ
+                    //      </a>";
+
+                    // echo "<a class='button wc-action-button wc-action-button-view dom view dom'   target='_blank' 
+                    //  href='". wp_nonce_url( admin_url( "admin-post.php?action=viewinps&status=packinglist&id={$parm->id}")) ."'> #
+                    //      </a>";
     				
     				//  echo "<a class='button wc-action-button wc-action-button-view parcial view parcial' onclick='sayHello()' target='_blank' 
     				//   href='". wp_nonce_url( admin_url( "admin-post.php?action=viewinps&status=invoice&id={$parm->id}")) ."'>Δ
@@ -120,10 +131,66 @@ Text Domain: wcip
     				//  href='". wp_nonce_url( admin_url( "admin-post.php?action=viewinps&status=packinglist&id={$parm->id}")) ."'> #
     				//  	</a>";
 
-                    echo "<a class='button wc-action-button wc-action-button-view parcial view parcial' onclick='sayHello(".$parm->id.")' >Δ
+                    // Starts Query String 
+
+                    $order = wc_get_order( $parm->id );
+                    $currency_symbol = get_woocommerce_currency_symbol( $order->currency );
+                    $country_name = WC()->countries->countries[ $order->billing_country];
+                    $dataarray = array(
+
+                                    'Order Number'   =>     $parm->id,
+                                    'Order Date'     =>     $order->order_date ,
+                                    'Payment Method' =>     $order->payment_method_title,
+                                    'currency_symbol'=>     $currency_symbol,
+                                    'country_name'   =>     $country_name,
+
+                                    'billing_company'   =>  $order->billing_company ,
+                                    'billing_first_name'=>  $order->billing_first_name ,
+                                    'billing_last_name' =>  $order->billing_last_name ,
+                                    'billing_address_1' =>  $order->billing_address_1 ,
+                                    'billing_address_2' =>  $order->billing_address_2 ,
+                                    'billing_city'      =>  $order->billing_city ,
+                                    'billing_postcode'  =>  $order->billing_postcode ,
+
+                                    'shipping_company'    =>    $order->shipping_company ,
+                                    'shipping_first_name' =>    $order->shipping_first_name ,
+                                    'shipping_last_name'  =>    $order->shipping_last_name ,
+                                    'shipping_address_1'  =>    $order->shipping_address_1 ,
+                                    'shipping_address_2'  =>    $order->shipping_address_2 ,
+                                    'shipping_city'       =>    $order->shipping_city ,
+                                    'shipping_postcode'   =>    $order->shipping_postcode 
+
+                                    // 'shopping_products'   =>    $order->get_items() 
+                                );
+
+                    foreach($order->get_items() as $item_id => $item_values){
+                        $items = array();
+
+                        // $product_id = $item_values['product_id'];
+
+                        // $dataarray['shopping_products'] [$product_id ]['product_id'] =     $item_values['product_id'];
+                        // $dataarray['shopping_products'] [$product_id ]['name']       =     $item_values['name'];
+                        // $dataarray['shopping_products'] [$product_id ]['quantity']   =     $item_values['quantity'];
+                        // $dataarray['shopping_products'] [$product_id ]['subtotal']   =     $item_values['subtotal'];
+                        // $dataarray['shopping_products'] [$product_id ]['total']      =     $item_values['total'];
+
+                        $items['product_id'] = $item_values['product_id'];
+                        $items['name'] =       $item_values['name'];
+                        $items['quantity'] =   $item_values['quantity'];
+                        $items['subtotal'] =   $item_values['subtotal'];
+                        $items['total'] =      $item_values['total'];
+
+                        $dataarray['shopping_products'][]  =    $items;
+                    }
+
+
+                    // Ends Query String 
+
+
+                    echo "<a  data-order-id='". json_encode($dataarray) ."' class='invoice_link button wc-action-button wc-action-button-view parcial view parcial'  >Δ
                         </a>";
 
-                    echo "<a class='button wc-action-button wc-action-button-view dom view dom' onclick='sayHello(".$parm->id.")'  > # </a>";
+                    echo "<a  data-order-id='".$parm->id."' class='invoice_link button wc-action-button wc-action-button-view dom view dom'   > # </a>";
     			}
 
                 public static function add_settings_tab( $settings_tabs ) {
@@ -777,327 +844,307 @@ Text Domain: wcip
                 
                 function my_admin_footer_function() {
                    ?>
-                   
-                   <!-- Vue JS Starts  -->
-                   <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
-                   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-                   <dir id="testViw">
-                        <span style="float: right; padding-bottom: 50px;" >
-                            <p>{{ message }}</p>
-                            <?php echo '<button v-on:click="reverseMessage">Reverse Message</button>'; ?>
-                            <!-- <button v-on:click="reverseMessage">Reverse Message</button> -->
-                        </span>
-                      
-                   </dir>
-
                   
                     <div id="invoice"  >
                            
-                                
-
-
-                               <table style="width:100%">
-                                 <tr>
-                                   <td style="width:65%"> 
-                                    <p>
-                                        <img src="http://via.placeholder.com/150x150">
-                                        <img src="http://api.qrserver.com/v1/create-qr-code/?color=000000&amp;bgcolor=FFFFFF&amp;data=http%3A%2F%2Flocalhost%2Fcomponentsource%2Fmy-account%2F&amp;qzone=1&amp;margin=0&amp;size=150x150&amp;ecc=L" alt="qr code" />
-                                    </p> 
-                                   </td>
-                                   <td style="width:35%">
-                                    <h2 style="color:#999999; "> INVOICE {{message}} </h2>
-                                    <p>  
-                                        <b>leetech</b><br>
-                                        124 / Kha , Majar co-opperativ Market
-                                        <br>
-                                        Dhaka – 1216 , 
-                                        Bangladesh
-                                        <br>
-                                        tel: +01775-787641  ,
-                                        email : leetech.info@gmail.com 
-                                    </p>
-                                   </td>
-                                 </tr>
-                               </table>
-
-                                <table id="customers">
-                                          <tr>
-                                            <th style="width:33%" > Billing Address </th>
-                                            <th style="width:33%" > Shipping Address  </th>
-                                            <th style="width:33%" > Order details </th>
-                                          </tr>
-
-                                          <tr>
-
-                                            <td><?php $order->billing_company         ?></td>
-                                            <td><?php $order->shipping_company        ?></td>
-                                            <td> Invoice Number: <i> <b> 1++ </b> </i> </td>
-                                          </tr>
-
-                                          <tr>
-                                            <td><?php $order->billing_first_name . " " .  $order->shipping_last_name ?> </td>
-                                            <td><?php $order->shipping_first_name . " " .  $order->shipping_last_name ?></td>
-                                            <td> Invoice Date: <i>  November 21, 2017 </i> </td>
-                                          </tr>
-
-                                          <tr>
-                                            <td><?php $order->billing_address_1    ?></td>
-                                            <td><?php $order->shipping_address_1  ?></td>
-                                            <td> Order Number: <i><b><?php $order->id ?></b></i> </td>
-                                          </tr>
-
-                                          <tr>
-                                            <td><?php $order->billing_address_2    ?></td>
-                                            <td><?php $order->shipping_address_2   ?> </td>
-                                            <td> Order Date: <i>    <?php $order->order_date ?> </i> </td>
-                                          </tr>
-
-                                          <tr>
-                                            <td><?php $order->billing_city . $order->billing_postcode  ?></td>
-                                            <td><?php $order->shipping_city . $order->shipping_postcode    ?></td>
-                                            <td> Payment Method: <i> <?php $order->payment_method_title ?> </i> </td>
-                                          </tr>        
-                                </table>
+                            
+                        <table style="width:100%">
+                         <tr>
+                           <td style="width:65%"> 
+                            <p>
+                                <img src="http://via.placeholder.com/150x150">
+                                <img src="http://api.qrserver.com/v1/create-qr-code/?color=000000&amp;bgcolor=FFFFFF&amp;data=http%3A%2F%2Flocalhost%2Fcomponentsource%2Fmy-account%2F&amp;qzone=1&amp;margin=0&amp;size=150x150&amp;ecc=L" alt="qr code" />
+                            </p> 
+                           </td>
+                           <td style="width:35%">
+                            <h2 style="color:#999999; "> INVOICE {{message}} </h2>
+                            <p>  
+                                <b>leetech</b><br>
+                                124 / Kha , Majar co-opperativ Market
                                 <br>
+                                Dhaka – 1216 , 
+                                Bangladesh
                                 <br>
+                                tel: +01775-787641  ,
+                                email : leetech.info@gmail.com 
+                            </p>
+                           </td>
+                         </tr>
+                        </table>
 
-                                <table id="customers">
-                                    <tr>
-                                        <th id="number" > # </th>
-                                        <th>Product Name</th>
-                                        <th id="qty" >Qty</th>
-                                        <th id="unit_price">Unit Price</th>
-                                        <th id="total">Total</th>
-                                    </tr>
+                        <table id="customers">
+                                  <tr>
+                                    <th style="width:33%" > Billing Address </th>
+                                    <th style="width:33%" > Shipping Address  </th>
+                                    <th style="width:33%" > Order details </th>
+                                  </tr>
 
-                                    <tr>
-                                        <td>1</td>
-                                        <td> Apple </td>
-                                        <td> 2 </td>
-                                        <td>80</td>
-                                        <td> 160 </td>
-                                    </tr>
+                                  <tr>
 
-                                    <tr>
-                                        <td>1</td>
-                                        <td> Apple </td>
-                                        <td> 2 </td>
-                                        <td>80</td>
-                                        <td> 160 </td>
-                                    </tr>
+                                    <td><?php $order->billing_company         ?></td>
+                                    <td><?php $order->shipping_company        ?></td>
+                                    <td> Invoice Number: <i> <b> 1++ </b> </i> </td>
+                                  </tr>
 
-                                    <tr>
-                                        <td>1</td>
-                                        <td> Apple </td>
-                                        <td> 2 </td>
-                                        <td>80</td>
-                                        <td> 160 </td>
-                                    </tr>
+                                  <tr>
+                                    <td><?php $order->billing_first_name . " " .  $order->shipping_last_name ?> </td>
+                                    <td><?php $order->shipping_first_name . " " .  $order->shipping_last_name ?></td>
+                                    <td> Invoice Date: <i>  November 21, 2017 </i> </td>
+                                  </tr>
 
-                                    <tr>
-                                        <td colspan='2' > </td>
-                                        <td colspan='2' id='subtotal_col' > Shipping </td>
-                                            <td>{$currency_symbol}  {$order->shipping_total} </td>
-                                    </tr>
-                                  
-                                    <tr>
-                                        <td colspan='2' > </td>
-                                        <td colspan='2' id='subtotal_col'  > Total Tax </td>
-                                        <td>{$currency_symbol}  {$order->total_tax}  </td>
-                                    </tr>
+                                  <tr>
+                                    <td><?php $order->billing_address_1    ?></td>
+                                    <td><?php $order->shipping_address_1  ?></td>
+                                    <td> Order Number: <i><b><?php $order->id ?></b></i> </td>
+                                  </tr>
 
-                                    <tr>
-                                        <td colspan='2' > </td>
-                                        <td colspan='2' id='subtotal_col'  > discount total </td>
-                                        <td>{$currency_symbol} {$order->discount_total}</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan='2'> </td>
-                                        <td colspan='2' id='subtotal_col'  > Invoice total </td>
-                                        <td>{$currency_symbol}  {$order->total}  </td>
-                                    </tr>
+                                  <tr>
+                                    <td><?php $order->billing_address_2    ?></td>
+                                    <td><?php $order->shipping_address_2   ?> </td>
+                                    <td> Order Date: <i>    <?php $order->order_date ?> </i> </td>
+                                  </tr>
 
-                                </table>
+                                  <tr>
+                                    <td><?php $order->billing_city . $order->billing_postcode  ?></td>
+                                    <td><?php $order->shipping_city . $order->shipping_postcode    ?></td>
+                                    <td> Payment Method: <i> <?php $order->payment_method_title ?> </i> </td>
+                                  </tr>        
+                        </table>
+                        <br>
+                        <br>
+
+                        <table id="customers">
+                            <tr>
+                                <th id="number" > # </th>
+                                <th>Product Name</th>
+                                <th id="qty" >Qty</th>
+                                <th id="unit_price">Unit Price</th>
+                                <th id="total">Total</th>
+                            </tr>
+
+                            <tr>
+                                <td>1</td>
+                                <td> Apple </td>
+                                <td> 2 </td>
+                                <td>80</td>
+                                <td> 160 </td>
+                            </tr>
+
+                            <tr>
+                                <td>1</td>
+                                <td> Apple </td>
+                                <td> 2 </td>
+                                <td>80</td>
+                                <td> 160 </td>
+                            </tr>
+
+                            <tr id="divafter" >
+                                <td>1</td>
+                                <td> Apple </td>
+                                <td> 2 </td>
+                                <td>80</td>
+                                <td> 160 </td>
+                            </tr>
+
                             
 
-                           
+                            <tr>
+                                <td colspan='2' > </td>
+                                <td colspan='2' id='subtotal_col' > Shipping </td>
+                                    <td>{$currency_symbol}  {$order->shipping_total} </td>
+                            </tr>
+                          
+                            <tr>
+                                <td colspan='2' > </td>
+                                <td colspan='2' id='subtotal_col'  > Total Tax </td>
+                                <td>{$currency_symbol}  {$order->total_tax}  </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan='2' > </td>
+                                <td colspan='2' id='subtotal_col'  > discount total </td>
+                                <td>{$currency_symbol} {$order->discount_total}</td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'> </td>
+                                <td colspan='2' id='subtotal_col'  > Invoice total </td>
+                                <td>{$currency_symbol}  {$order->total}  </td>
+                            </tr>
+
+                        </table>
+
+                        <style type="text/css">
+
+                           @media print {
+                              /* #invoice{
+                                 visibility: visible;
+                               }*/
+
+                               html, body {
+                                  height: 99%;    
+                                  margin: 0 !important ;
+                                  padding:0 !important ;
+                                  background:  white ;
+                               }
+
+                               /*Table Style start*/
+
+                               /*table {
+                                   font-family: arial, sans-serif;
+                                   border-collapse: collapse;
+                                   width: 100%;
+                                   margin-top: 15px ;
+                               }
+
+                               td, th {
+                                   border: 1px solid #dddddd;
+                                   text-align: left;
+                                   padding: 8px;
+                               }
+
+                               tr:nth-child(even) {
+                                   background-color: #dddddd;
+                               } */
+
+                               table{
+                                   width: 100% ;
+                               }
+
+                               #customers td, #customers th {
+                                   border: 1px solid #ddd;
+                                   padding: 8px;
+                               }
+
+                               #customers tr:nth-child(even){background-color: #f2f2f2;}
+
+                               #customers tr:hover {background-color: #ddd;}
+
+                               #customers th {
+                                   padding-top: 12px;
+                                   padding-bottom: 12px;
+                                   text-align: left;
+                                   background-color: #4CAF50;
+                                   color: white;
+                               }
+
+                               #number{
+                                   width:40px; 
+                               }
+
+                               #qty{
+                                   width:50px; 
+                               }
+
+                               #unit_price{
+                                   width:130px; 
+                               }
+
+                               #total{
+                                   width:130px;
+                               }
+
+                               /*Table Style Ends*/
+                           }
+
+
+                           #invoice{
+                               visibility: hidden;
+                               position: absolute;
+                               top: 0 ;
+                               left:0;
+                               right: 0 ;
+                               width: 100%;
+                           }
+                        </style>
+
+                        <!-- <script
+                          src="https://code.jquery.com/jquery-3.3.1.min.js"
+                          integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+                          crossorigin="anonymous"></script>
+
+                        <script> -->
+                        <script type="text/javascript">
+
+                            jQuery(document).ready(function(){
+
+                               jQuery('body').on('click','a.invoice_link',  function(evt){
+                                    // alert( $(this).data('order-id') );
+
+                                    // console.log( JSON.parse( $(this).data('order-id')));
+
+
+                                    console.log( jQuery(this).data('order-id'));
+
+                                    info  = jQuery(this).data('order-id') ;
+
+                                    
+
+                                    $.each( info.shopping_products , function(i, item) {
+                                        // console.log( info.shopping_products[i].product_id +" |" + info.shopping_products[i].name);
+                                        // console.log( '----------------------------' );
+                                        // $('#divafter').after('<tr> <td> '+i+' </td> <td> '+info.shopping_products[i].name+' </td> <td> '+info.shopping_products[i].quantity+' </td> <td>'+info.shopping_products[i].subtotal+'</td><td> '+info.shopping_products[i].total+' </td>  </tr>');
+
+                                        jQuery('#divafter').append('<tr> <td> '+i+' </td> <td> '+info.shopping_products[i].name+' </td> <td> '+info.shopping_products[i].quantity+' </td> <td>'+info.shopping_products[i].subtotal+'</td><td> '+info.shopping_products[i].total+' </td>  </tr>');
+
+
+
+                                        // console.log(i);
+                                    })
+
+
+
+
+
+                                    // console.log(ajaxurl);
+
+
+                                    // jQuery.post(ajaxurl, data, function(response) {
+                                    //     // alert('Got this from the server: ' + response);
+                                    //     $('#invoice_billing_address').html(' is This Working !!! Number :'+response);
+                                    // });
+
+                                    // $('#invoice_billing_address').html(' is This Working !!! Number :');
+
+                                    
+                                    // Starts
+                                        var printContents = document.getElementById('invoice').innerHTML;
+                                        var originalContents = document.body.innerHTML;
+
+                                        document.getElementById("invoice").style.visibility = "visible";
+                                        document.body.innerHTML =  printContents
+                                                                      
+                                        window.print();
+                                        document.body.innerHTML = originalContents  ;
+                                    // Ends
+                                    
+
+                                   
+                                });
+
+                            });
+
+
+                            
+
+                            // function sayHello($id) {
+                            //     var printContents = document.getElementById('invoice').innerHTML;
+                            //     var originalContents = document.body.innerHTML;
+
+                            //     document.getElementById("invoice").style.visibility = "visible";
+                            //     document.body.innerHTML =  printContents
+                               
+                            //     window.print();
+                            //     document.body.innerHTML = originalContents;
+                            // }
+                        </script>
+
 
                     </div>
 
 
-                   <script type="text/javascript">
-                       
-                       // var app5 = new Vue({
-                       //   el: '#invoice',
-                       //   data: {
-                       //     message: 'Hello Vue.js!'
-                       //   },
-                       //   methods: {
-                       //     reverseMessage: function () {
-                       //       this.message = this.message.split('').reverse().join('')
-                       //     }
-                       //   }
-                       // })
-                    </script>
-
-                    <style type="text/css">
-
-                       @media print {
-                          /* #invoice{
-                             visibility: visible;
-                           }*/
-
-                           html, body {
-                              height: 99%;    
-                              margin: 0 !important ;
-                              padding:0 !important ;
-                              background:  white ;
-                           }
-
-                           /*Table Style start*/
-
-                           /*table {
-                               font-family: arial, sans-serif;
-                               border-collapse: collapse;
-                               width: 100%;
-                               margin-top: 15px ;
-                           }
-
-                           td, th {
-                               border: 1px solid #dddddd;
-                               text-align: left;
-                               padding: 8px;
-                           }
-
-                           tr:nth-child(even) {
-                               background-color: #dddddd;
-                           } */
-
-                           table{
-                               width: 100% ;
-                           }
-
-                           #customers td, #customers th {
-                               border: 1px solid #ddd;
-                               padding: 8px;
-                           }
-
-                           #customers tr:nth-child(even){background-color: #f2f2f2;}
-
-                           #customers tr:hover {background-color: #ddd;}
-
-                           #customers th {
-                               padding-top: 12px;
-                               padding-bottom: 12px;
-                               text-align: left;
-                               background-color: #4CAF50;
-                               color: white;
-                           }
-
-                           #number{
-                               width:40px; 
-                           }
-
-                           #qty{
-                               width:50px; 
-                           }
-
-                           #unit_price{
-                               width:130px; 
-                           }
-
-                           #total{
-                               width:130px;
-                           }
-
-                           /*Table Style Ends*/
-                       }
 
 
-                       #invoice{
-                           visibility: hidden;
-                           position: absolute;
-                           top: 0 ;
-                           left:0;
-                           right: 0 ;
-                           width: 100%;
-                       }
-
-                       
-                       
-                     
-
-                   </style>
-
-                   <script>
-                      function old_sayHello() {
-                          var printContents = document.getElementById('invoice').innerHTML;
-                          var originalContents = document.body.innerHTML;
-                          document.body.innerHTML = printContents;
-                          window.print();
-                          document.body.innerHTML = originalContents;
-                      }
-
-                      function hmm_sayHello() {
-                           var printContents = document.getElementById('invoice').innerHTML;
-                           var originalContents = document.body.innerHTML;
-                           document.body.innerHTML = printContents;
-
-                           window.print();
-
-                           document.body.innerHTML = originalContents;
-                      }
-
-                      function sayHello($id) {
-                           console.log($id) ;
-                           console.log(ajaxurl) ;
-
-
-                            var xhttp = new XMLHttpRequest();
-                                xhttp.onreadystatechange = function() {
-                                if (this.readyState == 4 && this.status == 200) {
-                                    // document.getElementById("demo").innerHTML = this.responseText;
-                                    console.log('Ajax Respons :' + this.responseText) ;
-
-                                }
-                            };
-
-
-                            xhttp.open("GET", ajaxurl , true);
-                            xhttp.send();
-
-                          //  var printContents = document.getElementById('invoice').innerHTML;
-                          //  var originalContents = document.body.innerHTML;
-
-                          //  document.getElementById("invoice").style.visibility = "visible";
-                          //  document.body.innerHTML =  printContents
-                          
-                          // window.print();
-                          // document.body.innerHTML = originalContents;
-                      }
-
-                      function x_sayHello($orderid) {
-                           
-                           alert($orderid) ;
-                          
-                      }
-
-                      var app5 = new Vue({
-                        el: '#invoice',
-                        data: {
-                          message: 'Hello Vue.js!'
-                        },
-                        methods: {
-                          reverseMessage: function () {
-                            this.message = this.message.split('').reverse().join('')
-                          },
-                          datatran:function($id){
-                            console.log($id );
-                          }
-                        }
-                      })
-                   </script>
+                  
 
                    <?php
                 }

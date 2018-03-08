@@ -1,90 +1,59 @@
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-#customers {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
+<?php
+
+
+if (is_user_logged_in()) {
+  // echo " Hmm you are Logged in : Good Job <br>";
+}
+$status = (isset($_GET['status']) ? $_GET['status'] : false); // status
+$id =  (isset($_GET['id']) ? $_GET['id'] : false); // id
+$order = wc_get_order( $id  );
+$currency_symbol = get_woocommerce_currency_symbol( $order->currency );
+
+$products = array() ;
+
+foreach($order->get_items() as $item_id => $item_values){
+
+  $items = array();
+
+  $product_id = $item_values['product_id'];
+  $product_name = $item_values['name'];
+  $product_quantity = $item_values['quantity'];
+  $product_subtotal_price = $item_values['subtotal'];
+  $product_total_price = $item_values['total'];
+
+  echo $product_id  ." ". $product_name  ." ".   $product_quantity  ." ".   $product_subtotal_price   ." ".  $product_total_price  ;
+
+  // $products[$product_id ]['product_id'] = $product_id  ;
+  // $products[$product_id ]['name'] =       $product_name  ;
+  // $products[$product_id ]['quantity'] =   $product_quantity  ;
+  // $products[$product_id ]['subtotal'] =   $product_subtotal_price  ;
+  // $products[$product_id ]['total'] =      $product_total_price   ;
+
+  // $products[$product_id ]['product_id'] = $item_values['product_id'];
+  // $products[$product_id ]['name'] =       $item_values['name'];
+  // $products[$product_id ]['quantity'] =   $item_values['quantity'];
+  // $products[$product_id ]['subtotal'] =   $item_values['subtotal'];
+  // $products[$product_id ]['total'] =      $item_values['total'];
+
+
+  $items['product_id'] = $item_values['product_id'];
+  $items['name'] =       $item_values['name'];
+  $items['quantity'] =   $item_values['quantity'];
+  $items['subtotal'] =   $item_values['subtotal'];
+  $items['total'] =      $item_values['total'];
+  
+  $products[] = $items; 
+
+  // echo "<br>";
+
 }
 
-#customers td, #customers th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
+echo "<br>";
+// print_r($order->get_items()  )
+echo "<pre>";
+print_r($products );
+echo "</pre>";
 
-#customers tr:nth-child(even){background-color: #f2f2f2;}
 
-#customers tr:hover {background-color: #ddd;}
 
-#customers th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #4CAF50;
-    color: white;
-}
-</style>
-</head>
-<body>
-
-<table id="customers">
-  <tr>
-    <th>Company</th>
-    <th>Contact</th>
-    <th>Country</th>
-  </tr>
-  <tr>
-    <td>Alfreds Futterkiste</td>
-    <td>Maria Anders</td>
-    <td>Germany</td>
-  </tr>
-  <tr>
-    <td>Berglunds snabbköp</td>
-    <td>Christina Berglund</td>
-    <td>Sweden</td>
-  </tr>
-  <tr>
-    <td>Centro comercial Moctezuma</td>
-    <td>Francisco Chang</td>
-    <td>Mexico</td>
-  </tr>
-  <tr>
-    <td>Ernst Handel</td>
-    <td>Roland Mendel</td>
-    <td>Austria</td>
-  </tr>
-  <tr>
-    <td>Island Trading</td>
-    <td>Helen Bennett</td>
-    <td>UK</td>
-  </tr>
-  <tr>
-    <td>Königlich Essen</td>
-    <td>Philip Cramer</td>
-    <td>Germany</td>
-  </tr>
-  <tr>
-    <td>Laughing Bacchus Winecellars</td>
-    <td>Yoshi Tannamuri</td>
-    <td>Canada</td>
-  </tr>
-  <tr>
-    <td>Magazzini Alimentari Riuniti</td>
-    <td>Giovanni Rovelli</td>
-    <td>Italy</td>
-  </tr>
-  <tr>
-    <td>North/South</td>
-    <td>Simon Crowther</td>
-    <td>UK</td>
-  </tr>
-  <tr>
-    <td>Paris spécialités</td>
-    <td>Marie Bertrand</td>
-    <td>France</td>
-  </tr>
-</table>
-
-</body>
-</html>
+?>
