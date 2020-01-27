@@ -13,7 +13,6 @@ $dompdf = new Dompdf();
 
 // Woocommerce Query Starts 
 // ########################
-
 	if (is_user_logged_in()) {
 		// echo " Hmm you are Logged in : Good Job <br>";
 	}
@@ -24,18 +23,6 @@ $dompdf = new Dompdf();
 	$currency_symbol = get_woocommerce_currency_symbol( $order->currency );
 	// help Text :: https://stackoverflow.com/questions/25528454/getting-country-name-from-country-code-in-woocommerce/25533953
 	$country_name = WC()->countries->countries[ $order->billing_country];
-
-	// echo "<pre>";
-	// print_r($order) ; 
-	// echo "</pre>";
-	// echo "<hr>";
-	// echo $order->billing_country ;
-	// echo WC()->countries->countries[ $order->billing_country]; 
-	// echo "<br>";
-	// echo $woocommerce->customer->get_shipping_country() ;
-
-	
-// ######################
 // Woocommerce Query Ends 
 
 $html = '<html>
